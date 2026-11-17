@@ -7,46 +7,58 @@
 <meta name="description" content="Tell it the last MCU movie or show you saw, and get a catch-up list of everything you still need to see before Avengers: Doomsday.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Castoro+Titling&family=Barlow+Semi+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   /*
     Doom palette: two neutral primaries + one vibrant secondary. No pure white or black.
-      Cloak  #1F3329  (primary, neutral: Doom's dark green cloak)
-      Iron   #CDD0C8  (primary, neutral: Doom's steel armour)
-      Glow   #3DF57A  (secondary, vibrant: Doom's green energy)
+      Cloak  #1F3329  (primary, neutral: the dark green cloak)
+      Iron   #CDD0C8  (primary, neutral: the steel armour)
+      Glow   #3DF57A  (secondary, vibrant: the green energy)
     Every other colour below is one of these three, or a mix of them.
+    Style: forged iron plates with rivets and chamfered corners, a heavy cloak,
+    engraved regal lettering, and green energy glowing through the seams.
   */
   :root {
     --cloak: #1F3329;
     --iron: #CDD0C8;
     --glow: #3DF57A;
 
-    --bg: var(--iron);
-    --panel: #D8DBD3;              /* iron, lifted */
+    /* light: polished iron */
+    --bg: #BFC4BB;
+    --plate-hi: #DDE0D9;
+    --plate-lo: #B5BBB1;
     --ink: var(--cloak);
-    --ink-soft: #4A5A50;           /* cloak mixed with iron */
-    --line: var(--cloak);
-    --hair: #A7AEA4;               /* iron darkened */
-    --chip: #BBC0B6;               /* iron, one step down */
+    --ink-soft: #46564D;
+    --line: #7C867E;
+    --rivet: #6C776F;
+    --hair: #A3AAA0;
+    --chip: #A9B0A6;
+    --well: #CDD0C8;
     --on-glow: var(--cloak);
-    --shadow: var(--cloak);
+    --glow-soft: rgba(61, 245, 122, 0.22);
+    --head-glow: none;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #15231C;               /* cloak, deepened */
-      --panel: var(--cloak);
+      --bg: #101A15;
+      --plate-hi: #263B31;
+      --plate-lo: #18261F;
       --ink: var(--iron);
-      --ink-soft: #93A198;         /* iron mixed with cloak */
-      --line: var(--iron);
-      --hair: #33463B;
+      --ink-soft: #95A29A;
+      --line: #4A5C52;
+      --rivet: #7D8A82;
+      --hair: #2E4238;
       --chip: #2A3D33;
+      --well: #132019;
       --on-glow: var(--cloak);
-      --shadow: #0D1612;
+      --glow-soft: rgba(61, 245, 122, 0.18);
+      --head-glow: 0 0 18px rgba(61, 245, 122, 0.35);
     }
   }
   :root[data-theme="dark"] {
-    --bg: #15231C; --panel: var(--cloak); --ink: var(--iron); --ink-soft: #93A198;
-    --line: var(--iron); --hair: #33463B; --chip: #2A3D33; --on-glow: var(--cloak); --shadow: #0D1612;
+    --bg: #101A15; --plate-hi: #263B31; --plate-lo: #18261F; --ink: var(--iron); --ink-soft: #95A29A;
+    --line: #4A5C52; --rivet: #7D8A82; --hair: #2E4238; --chip: #2A3D33; --well: #132019;
+    --on-glow: var(--cloak); --glow-soft: rgba(61, 245, 122, 0.18); --head-glow: 0 0 18px rgba(61, 245, 122, 0.35);
   }
 
   * { box-sizing: border-box; }
@@ -54,159 +66,323 @@
   body {
     margin: 0;
     background-color: var(--bg);
+    /* faint green energy rising from below, like light under a cloak */
+    background-image: radial-gradient(ellipse 80% 40% at 50% 0%, var(--glow-soft), transparent 70%);
+    background-repeat: no-repeat;
     color: var(--ink);
-    font: 16px/1.55 "Space Grotesk", system-ui, sans-serif;
+    font: 17px/1.5 "Barlow Semi Condensed", system-ui, sans-serif;
   }
-  main { max-width: 820px; margin: 0 auto; padding: 24px 16px 72px; }
-  .display { font-family: "Bebas Neue", "Arial Narrow", sans-serif; font-weight: 400; letter-spacing: 0.02em; line-height: 0.95; }
+  body { min-height: 100vh; }
+  main { width: 100%; padding: 0 0 56px; }
+  /* Full-width layout: the cloak spans the screen, content fills it below */
+  .layout { padding: 0 max(16px, 4vw); }
+  @media (min-width: 1100px) {
+    .layout { display: grid; grid-template-columns: minmax(380px, 5fr) 7fr; gap: 0 max(28px, 3vw); align-items: start; }
+    .col-left { position: sticky; top: 20px; }
+    #past { max-height: calc(100vh - 420px) !important; min-height: 220px; }
+  }
+  .placeholder { margin-top: 64px; min-height: 50vh; display: grid; place-content: center; padding: 48px 28px; text-align: center; color: var(--ink-soft); }
+  .placeholder svg { width: 72px; height: 72px; display: block; margin: 0 auto 14px; color: var(--glow); filter: drop-shadow(0 0 10px var(--glow-soft)); }
+  .placeholder strong { display: block; font-family: "Castoro Titling", Georgia, serif; font-size: 1.3rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink); margin-bottom: 4px; }
+  @media (max-width: 1099px) { .placeholder { display: none; } }
   :focus-visible { outline: 3px solid var(--glow); outline-offset: 2px; }
 
-  /* ---------- Hero ---------- */
-  .hero {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 20px;
-    align-items: center;
-    background: var(--cloak);
-    color: var(--iron);
-    border: 2px solid var(--line);
-    box-shadow: 6px 6px 0 var(--glow);
-    padding: 28px 24px;
-    margin-bottom: 36px;
+  /* Shared armour-plate look: chamfered corners, bevel, four rivets */
+  .plate {
+    --cut: 14px;
     position: relative;
-    overflow: hidden;
+    background: linear-gradient(165deg, var(--plate-hi), var(--plate-lo));
+    clip-path: polygon(var(--cut) 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, var(--cut) 100%, 0 calc(100% - var(--cut)), 0 var(--cut));
+    box-shadow: inset 0 0 0 2px var(--line), inset 0 2px 0 2px var(--hair);
   }
-  .hero::after { /* hazard stripe */
-    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 10px;
-    background: repeating-linear-gradient(-45deg, var(--glow) 0 12px, var(--cloak) 12px 24px);
-  }
-  .kicker { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--glow); margin: 0 0 6px; }
-  .hero h1 { font-size: clamp(3.2rem, 11vw, 5.6rem); margin: 0; }
-  .hero h1 span { color: var(--glow); }
-  .hero p { margin: 12px 0 0; max-width: 46ch; color: #A9B3AB; }
-  .countdown { display: inline-flex; align-items: baseline; gap: 8px; margin-top: 18px; padding: 6px 12px; border: 2px solid var(--iron); }
-  .countdown b { font-family: "Bebas Neue", sans-serif; font-size: 2rem; font-weight: 400; color: var(--glow); line-height: 1; }
-  .countdown span { font-size: 0.85rem; letter-spacing: 0.06em; text-transform: uppercase; }
-  .clock { width: 168px; height: 168px; flex: none; }
-  .clock .hand { transform-origin: 100px 100px; }
-  .clock .minute { animation: tick 6s steps(6) infinite alternate; }
-  @keyframes tick { from { transform: rotate(-24deg); } to { transform: rotate(-6deg); } }
-  @media (prefers-reduced-motion: reduce) { .clock .minute { animation: none; transform: rotate(-12deg); } }
-  @media (max-width: 560px) {
-    .hero { grid-template-columns: 1fr; }
-    .clock { width: 120px; height: 120px; order: -1; }
+  .plate::before {
+    content: ""; position: absolute; inset: 9px; pointer-events: none;
+    background:
+      radial-gradient(circle, var(--rivet) 2.6px, transparent 3.4px) left top / 12px 12px no-repeat,
+      radial-gradient(circle, var(--rivet) 2.6px, transparent 3.4px) right top / 12px 12px no-repeat,
+      radial-gradient(circle, var(--rivet) 2.6px, transparent 3.4px) left bottom / 12px 12px no-repeat,
+      radial-gradient(circle, var(--rivet) 2.6px, transparent 3.4px) right bottom / 12px 12px no-repeat;
   }
 
+  /* ---------- Hero: studio product shot ---------- */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    color: var(--iron);
+    margin-bottom: 40px;
+    min-height: min(78vh, 760px);
+    padding: 22px max(16px, 4vw) 36px;
+    display: flex; flex-direction: column;
+    /* studio backdrop: a soft key light behind the object, falling off to deep cloak */
+    background:
+      radial-gradient(ellipse 42% 55% at 50% 42%, rgba(205, 208, 200, 0.16), transparent 70%),
+      radial-gradient(ellipse 70% 80% at 50% 38%, #34513F 0%, #23392E 45%, #15241D 80%, #101A15 100%);
+  }
+  /* floor: a gentle horizon where the shadow lands */
+  .hero::before {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 38%;
+    background: linear-gradient(180deg, transparent, rgba(16, 26, 21, 0.55));
+    pointer-events: none;
+  }
+  .hero::after { /* green rim of light on the floor edge */
+    content: ""; position: absolute; left: 10%; right: 10%; bottom: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--glow), transparent);
+    box-shadow: 0 0 18px var(--glow);
+    opacity: 0.6;
+  }
+
+  /* glass pill navigation */
+  .topbar { position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-family: "Castoro Titling", Georgia, serif; font-weight: 400; letter-spacing: 0.12em; font-size: 0.9rem; text-transform: uppercase; }
+  .brand i {
+    width: 30px; height: 30px; display: grid; place-items: center; font-style: normal; font-size: 0.8rem; color: var(--on-glow);
+    background: radial-gradient(circle at 35% 30%, #B8FFD0, var(--glow) 60%);
+    clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%);
+  }
+  .pills {
+    display: flex; gap: 4px; padding: 5px;
+    background: rgba(205, 208, 200, 0.08);
+    border: 1px solid rgba(205, 208, 200, 0.18);
+    border-radius: 999px;
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    box-shadow: inset 0 1px 0 rgba(205, 208, 200, 0.12), 0 8px 24px rgba(13, 22, 18, 0.35);
+  }
+  .pills a {
+    color: var(--iron); text-decoration: none; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 7px 14px; border-radius: 999px;
+  }
+  .pills a:first-child { background: var(--iron); color: var(--cloak); }
+  .pills a:hover { background: rgba(205, 208, 200, 0.16); }
+  .pills a:first-child:hover { background: var(--iron); }
+  .chip-date {
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 7px 12px; border-radius: 999px; border: 1px solid rgba(205, 208, 200, 0.22); color: #AEB8B0;
+  }
+
+  .stage {
+    position: relative; z-index: 1; flex: 1;
+    display: grid; grid-template-columns: 1fr minmax(260px, 1.1fr) 1fr; align-items: center; gap: 24px;
+    padding-top: 24px;
+  }
+  .kicker {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 0.8rem; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase; color: var(--glow); margin: 0 0 10px;
+  }
+  .kicker::before { content: ""; width: 22px; height: 2px; background: var(--glow); box-shadow: 0 0 8px var(--glow); }
+  .hero h1 {
+    font-family: "Castoro Titling", Georgia, serif; font-weight: 400; 
+    font-size: clamp(2.4rem, 4.6vw, 4.6rem); line-height: 0.98; letter-spacing: 0.03em; margin: 0;
+    text-transform: uppercase;
+    background: linear-gradient(180deg, #E4E6E0 0%, var(--iron) 45%, #8E978F 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .hero h1 span { display: block; color: var(--glow); -webkit-text-fill-color: var(--glow); text-shadow: 0 0 22px rgba(61, 245, 122, 0.55); }
+  .hero p { margin: 14px 0 0; max-width: 40ch; color: #AEB8B0; font-size: clamp(1rem, 1.15vw, 1.15rem); }
+  .cta {
+    display: inline-flex; align-items: center; gap: 8px; margin-top: 22px;
+    padding: 10px 18px; border-radius: 999px; border: 0;
+    background: var(--iron); color: var(--cloak); font-weight: 700; font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase;
+    box-shadow: 0 8px 20px rgba(13, 22, 18, 0.45);
+  }
+  .cta:hover { background: var(--glow); }
+  .cta svg { width: 14px; height: 14px; }
+
+  /* the floating render */
+  .product { position: relative; display: grid; justify-items: center; }
+  .float { animation: bob 5s ease-in-out infinite; width: min(100%, 360px); position: relative; }
+  #mask3d { position: absolute; inset: 0; pointer-events: none; }
+  #mask3d canvas { width: 100% !important; height: 100% !important; display: block; filter: drop-shadow(0 24px 24px rgba(13, 22, 18, 0.6)); }
+  .has-3d .svg-face { display: none; }
+  .float svg { width: 100%; height: auto; display: block; filter: drop-shadow(0 30px 30px rgba(13, 22, 18, 0.55)) drop-shadow(0 0 40px rgba(61, 245, 122, 0.10)); }
+  .shadow {
+    width: 58%; height: 22px; margin-top: 8px; border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgba(10, 18, 14, 0.75), transparent 70%);
+    animation: shadow 5s ease-in-out infinite;
+  }
+  @keyframes bob { 0%, 100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-14px) rotate(1deg); } }
+  @keyframes shadow { 0%, 100% { transform: scaleX(1); opacity: 1; } 50% { transform: scaleX(0.82); opacity: 0.65; } }
+  .eyes { animation: pulse 3.2s ease-in-out infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
+  .caption { margin-top: 10px; text-align: center; font-family: "Castoro Titling", Georgia, serif; font-size: 0.95rem; letter-spacing: 0.08em; color: #AEB8B0; }
+  @media (prefers-reduced-motion: reduce) { .float, .shadow, .eyes { animation: none; } }
+
+  /* right column: the big number and depth selector */
+  .side { justify-self: end; text-align: right; }
+  .big {
+    font-family: "Castoro Titling", Georgia, serif; font-weight: 400; font-size: clamp(3.2rem, 6vw, 5.6rem); line-height: 0.9; color: var(--iron);
+    text-shadow: 0 6px 24px rgba(13, 22, 18, 0.5);
+  }
+  .big-label { font-size: 0.82rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #AEB8B0; margin-top: 6px; }
+  .big-label s { color: #7E8A82; }
+  .depth { margin-top: 26px; font-size: 0.8rem; color: #AEB8B0; letter-spacing: 0.06em; }
+  .dots { display: flex; gap: 10px; justify-content: flex-end; margin-top: 10px; }
+  .dots button {
+    width: 46px; height: 46px; border-radius: 50%; border: 0; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.04em;
+    color: var(--iron); background: radial-gradient(circle at 35% 30%, #4A5C52, #23392E 70%);
+    box-shadow: inset 0 1px 0 rgba(205, 208, 200, 0.2), 0 6px 14px rgba(13, 22, 18, 0.45);
+  }
+  .dots button[aria-pressed="true"] { color: var(--cloak); background: radial-gradient(circle at 35% 30%, #E4E6E0, var(--iron) 70%); }
+  .dots button:hover { box-shadow: 0 0 0 2px var(--glow), 0 6px 14px rgba(13, 22, 18, 0.45); }
+
+  /* small secondary render in the corner, like a second product */
+  .orb { position: absolute; right: max(16px, 4vw); bottom: 28px; width: 92px; z-index: 1; text-align: center; }
+  .orb svg { width: 92px; height: 92px; filter: drop-shadow(0 14px 14px rgba(13, 22, 18, 0.55)); animation: bob 6s ease-in-out infinite reverse; }
+  .orb span { display: block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #AEB8B0; margin-top: 4px; }
+  @media (prefers-reduced-motion: reduce) { .orb svg { animation: none; } }
+
+  @media (max-width: 980px) {
+    .stage { grid-template-columns: 1fr; text-align: left; }
+    .product { order: -1; }
+    .float { width: min(70vw, 280px); }
+    .side { justify-self: start; text-align: left; }
+    .dots { justify-content: flex-start; }
+    .orb { display: none; }
+    .pills a:not(:first-child) { display: none; }
+  }
+  @media (max-width: 520px) { .chip-date { display: none; } }
+
   /* ---------- Steps ---------- */
-  .step { margin-bottom: 32px; }
-  .step-head { display: flex; align-items: flex-end; gap: 14px; margin-bottom: 12px; }
+  .step { margin-bottom: 34px; }
+  .step-head { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
   .step-num {
-    font-family: "Bebas Neue", sans-serif; font-size: 3.4rem; line-height: 0.8;
-    color: var(--ink); text-shadow: 3px 3px 0 var(--glow); flex: none;
+    flex: none; width: 50px; height: 50px; display: grid; place-items: center;
+    font-family: "Castoro Titling", Georgia, serif; font-weight: 400; font-size: 1.2rem; color: var(--on-glow);
+    background: radial-gradient(circle at 35% 30%, #B8FFD0, var(--glow) 55%, #26B85A);
+    clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%);
   }
-  .step h2 { font-family: "Bebas Neue", sans-serif; font-weight: 400; font-size: 2rem; line-height: 1; margin: 0; letter-spacing: 0.02em; }
-  .card {
-    background: var(--panel);
-    border: 2px solid var(--line);
-    box-shadow: 5px 5px 0 var(--shadow);
-    padding: 18px;
+  .step h2 {
+    font-family: "Castoro Titling", Georgia, serif; font-weight: 400; font-size: 1.55rem; line-height: 1.1; margin: 0;
+    letter-spacing: 0.06em; text-transform: uppercase; text-shadow: var(--head-glow);
   }
-  .hint { color: var(--ink-soft); font-size: 0.92rem; margin: 0 0 14px; }
+  .step-head::after { content: ""; flex: 1; height: 2px; background: linear-gradient(90deg, var(--line), transparent); }
+  .card { padding: 22px 24px; }
+  .hint { color: var(--ink-soft); font-size: 0.98rem; margin: 0 0 14px; }
   .hidden { display: none !important; }
 
   select, button { font: inherit; color: var(--ink); }
   .select-wrap { position: relative; }
-  .select-wrap svg { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); pointer-events: none; }
+  .select-wrap svg { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--ink); }
   select {
-    width: 100%; appearance: none; -webkit-appearance: none;
-    background: var(--bg); border: 2px solid var(--line); border-radius: 0;
-    padding: 12px 44px 12px 14px; font-weight: 500;
+    width: 100%; appearance: none; -webkit-appearance: none; border-radius: 0;
+    background: var(--well); border: 0; box-shadow: inset 0 0 0 2px var(--line), inset 0 3px 8px rgba(14, 24, 19, 0.35);
+    padding: 13px 44px 13px 14px; font-weight: 600; font-size: 1.02rem;
   }
+  select:hover { box-shadow: inset 0 0 0 2px var(--glow), inset 0 3px 8px rgba(14, 24, 19, 0.35); }
   button { cursor: pointer; }
-  .linkish { background: none; border: 0; padding: 0; color: var(--ink); font-size: 0.85rem; font-weight: 700; text-decoration: underline; text-decoration-color: var(--glow); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+  .linkish {
+    background: none; border: 0; padding: 0; color: var(--ink); font-size: 0.9rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    text-decoration: underline; text-decoration-color: var(--glow); text-decoration-thickness: 2px; text-underline-offset: 4px;
+  }
   .label-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
 
-  .seg { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+  .seg { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
   .seg button {
-    background: var(--bg); border: 2px solid var(--line); padding: 8px 14px; font-weight: 700; font-size: 0.9rem;
-    box-shadow: 3px 3px 0 var(--shadow); transition: transform .08s, box-shadow .08s;
+    padding: 9px 16px; font-weight: 700; font-size: 0.92rem; text-transform: uppercase; letter-spacing: 0.08em; border: 0;
+    background: linear-gradient(180deg, var(--plate-hi), var(--plate-lo));
+    box-shadow: inset 0 0 0 2px var(--line), inset 0 2px 0 2px var(--hair);
+    clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
   }
-  .seg button:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--shadow); }
-  .seg button[aria-pressed="true"] { background: var(--glow); color: var(--on-glow); box-shadow: 1px 1px 0 var(--shadow); transform: translate(2px, 2px); }
+  .seg button:hover { box-shadow: inset 0 0 0 2px var(--glow); }
+  .seg button[aria-pressed="true"] {
+    background: radial-gradient(ellipse at 50% 30%, #A8FFC4, var(--glow) 70%); color: var(--on-glow);
+    box-shadow: inset 0 0 0 2px #26B85A;
+  }
 
   /* ---------- Timeline strip ---------- */
-  .strip { display: flex; gap: 2px; height: 34px; align-items: stretch; margin: 4px 0 6px; }
+  .strip { display: flex; gap: 2px; height: 34px; align-items: stretch; margin: 6px 0 6px; padding: 4px; background: var(--well); box-shadow: inset 0 0 0 2px var(--line); }
   .strip i { flex: 1; background: var(--chip); }
-  .strip i.seen { background: var(--ink); opacity: 0.85; }
-  .strip i.missed { background: var(--glow); }
+  .strip i.seen { background: var(--ink); opacity: 0.8; }
+  .strip i.missed { background: var(--glow); box-shadow: 0 0 8px var(--glow); }
   .strip i.next { background: repeating-linear-gradient(-45deg, var(--glow) 0 3px, transparent 3px 6px); outline: 1px solid var(--glow); outline-offset: -1px; }
   .strip i.here { position: relative; }
-  .strip i.here::after { content: ""; position: absolute; left: 50%; top: -9px; transform: translateX(-50%); border: 6px solid transparent; border-top-color: var(--ink); }
-  .strip-axis { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--ink-soft); letter-spacing: 0.06em; text-transform: uppercase; }
-  .legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 0.8rem; color: var(--ink-soft); margin: 10px 0 18px; }
+  .strip i.here::after { content: ""; position: absolute; left: 50%; top: -14px; transform: translateX(-50%); border: 6px solid transparent; border-top-color: var(--glow); }
+  .strip-axis { display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 600; color: var(--ink-soft); letter-spacing: 0.12em; text-transform: uppercase; }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 0.86rem; color: var(--ink-soft); margin: 10px 0 20px; }
   .legend span { display: inline-flex; align-items: center; gap: 6px; }
   .legend i { width: 14px; height: 14px; display: inline-block; }
 
   /* ---------- Stats ---------- */
-  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border: 2px solid var(--line); margin-bottom: 18px; }
-  .stats div { padding: 10px 12px; border-left: 2px solid var(--line); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft); }
-  .stats div:first-child { border-left: 0; background: var(--glow); color: var(--on-glow); }
-  .stats strong { display: block; font-family: "Bebas Neue", sans-serif; font-weight: 400; font-size: 2.3rem; line-height: 1; color: inherit; }
-  .stats div:not(:first-child) strong { color: var(--ink); }
-  @media (max-width: 560px) {
-    .stats { grid-template-columns: repeat(2, 1fr); }
-    .stats div:nth-child(3) { border-left: 0; }
-    .stats div:nth-child(n+3) { border-top: 2px solid var(--line); }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 18px; }
+  .stats div {
+    padding: 10px 12px; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-soft);
+    background: var(--well); box-shadow: inset 0 0 0 2px var(--line);
+    clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
   }
+  .stats div:first-child { background: radial-gradient(ellipse at 30% 20%, #A8FFC4, var(--glow) 70%); color: var(--on-glow); box-shadow: inset 0 0 0 2px #26B85A; }
+  .stats strong { display: block; font-family: "Castoro Titling", Georgia, serif; font-weight: 400; font-size: 2.1rem; line-height: 1.05; color: var(--ink); }
+  .stats div:first-child strong { color: var(--on-glow); }
+  @media (max-width: 560px) { .stats { grid-template-columns: repeat(2, 1fr); } }
 
   /* ---------- Lists ---------- */
   ul.items { list-style: none; margin: 0; padding: 0; }
-  ul.items > li { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; border-top: 1px dashed var(--hair); }
+  ul.items > li { display: flex; gap: 12px; align-items: flex-start; padding: 14px 0; border-top: 1px solid var(--hair); }
   ul.items > li:first-child { border-top: 0; }
+  ul.items > li > div { min-width: 0; flex: 1; }
   #past { max-height: 440px; overflow-y: auto; padding-right: 6px; }
-  .icon { width: 34px; height: 34px; flex: none; display: grid; place-items: center; border: 2px solid var(--line); background: var(--bg); }
+  .icon {
+    width: 36px; height: 36px; flex: none; display: grid; place-items: center;
+    background: var(--well); box-shadow: inset 0 0 0 2px var(--line);
+    clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%);
+  }
   .icon svg { width: 18px; height: 18px; }
-  .num { font-family: "Bebas Neue", sans-serif; font-size: 1.6rem; line-height: 1; min-width: 2ch; text-align: right; color: var(--ink-soft); flex: none; padding-top: 4px; }
-  .title { font-weight: 700; }
-  .meta { color: var(--ink-soft); font-size: 0.82rem; }
-  .note { font-size: 0.9rem; margin-top: 2px; }
-  .tag { display: inline-block; font-size: 0.66rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 1px 6px; margin-left: 8px; vertical-align: 2px; white-space: nowrap; border: 1.5px solid var(--line); }
-  .tag.e { background: var(--glow); border-color: var(--glow); color: var(--on-glow); }
-  .tag.r { background: var(--ink); border-color: var(--ink); color: var(--bg); }
-  .tag.o { color: var(--ink-soft); border-color: var(--hair); }
-  li.essential .icon { background: var(--glow); border-color: var(--line); }
+  .num { font-family: "Castoro Titling", Georgia, serif; font-weight: 400; font-size: 1.25rem; line-height: 1; min-width: 2.2ch; text-align: right; color: var(--ink-soft); flex: none; padding-top: 8px; }
+  .title { font-weight: 700; font-size: 1.08rem; }
+  .meta { color: var(--ink-soft); font-size: 0.88rem; letter-spacing: 0.04em; }
+  .note { font-size: 0.98rem; margin-top: 2px; }
+  .tag {
+    display: inline-block; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em;
+    padding: 2px 8px; margin-left: 8px; vertical-align: 2px; white-space: nowrap;
+    clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px);
+  }
+  .tag.e { background: var(--glow); color: var(--on-glow); }
+  .tag.r { background: var(--ink); color: var(--bg); }
+  .tag.o { color: var(--ink-soft); box-shadow: inset 0 0 0 1.5px var(--line); }
+  li.essential .icon { background: radial-gradient(circle at 35% 30%, #A8FFC4, var(--glow) 60%); box-shadow: inset 0 0 0 2px #26B85A; }
   li.essential .icon svg { color: var(--on-glow); }
 
-  /* custom checkbox */
-  .check { position: relative; flex: none; width: 26px; height: 26px; margin-top: 4px; }
-  .check input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
-  .check span { position: absolute; inset: 0; border: 2px solid var(--line); background: var(--bg); display: grid; place-items: center; }
+  /* custom checkbox: an iron stud that lights up */
+  .check { position: relative; flex: none; width: 28px; height: 28px; margin-top: 4px; }
+  .check input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; z-index: 1; }
+  .check span {
+    position: absolute; inset: 0; display: grid; place-items: center;
+    background: var(--well); box-shadow: inset 0 0 0 2px var(--line), inset 0 2px 5px rgba(14, 24, 19, 0.4);
+    clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%);
+  }
   .check span svg { width: 16px; height: 16px; opacity: 0; color: var(--on-glow); }
-  .check input:checked + span { background: var(--glow); }
+  .check input:checked + span { background: radial-gradient(circle at 35% 30%, #B8FFD0, var(--glow) 60%); box-shadow: inset 0 0 0 2px #26B85A; }
   .check input:checked + span svg { opacity: 1; }
   .check input:focus-visible + span { outline: 3px solid var(--glow); outline-offset: 2px; }
 
   .empty { display: block !important; text-align: center; padding: 28px 0 !important; color: var(--ink-soft); }
   .empty svg { width: 64px; height: 64px; display: block; margin: 0 auto 8px; }
-  ul.items > li > div { min-width: 0; flex: 1; }
-  .recap { margin-top: 8px; }
-  .recap summary {
-    display: inline-flex; align-items: center; gap: 6px; cursor: pointer; list-style: none;
-    font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
-    color: var(--ink); border: 2px solid var(--line); padding: 3px 10px; background: var(--bg); margin: 0;
-  }
-  .recap summary::-webkit-details-marker { display: none; }
-  .recap summary::before { content: "+"; font-size: 1rem; line-height: 1; }
-  .recap[open] summary { background: var(--glow); color: var(--on-glow); }
-  .recap[open] summary::before { content: "\2212"; }
-  .recap summary span { font-weight: 500; text-transform: none; letter-spacing: 0; opacity: 0.75; }
-  .recap ul { margin: 8px 0 0; padding: 10px 12px 10px 28px; border-left: 4px solid var(--glow); background: var(--bg); font-size: 0.9rem; }
-  .recap ul li { margin: 3px 0; }
-  details:not(.recap) summary { cursor: pointer; color: var(--ink-soft); font-size: 0.88rem; margin-top: 14px; }
-  details p { font-size: 0.88rem; color: var(--ink-soft); }
 
-  footer { color: var(--ink-soft); font-size: 0.8rem; margin-top: 36px; display: flex; gap: 10px; align-items: center; }
-  footer svg { width: 22px; height: 22px; flex: none; }
+  /* recap: a sealed decree that opens */
+  .recap { margin-top: 10px; }
+  .recap summary {
+    display: inline-block; cursor: pointer; list-style: none; margin: 0;
+    font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink);
+    padding: 5px 12px; background: var(--well); box-shadow: inset 0 0 0 1.5px var(--line);
+    clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+  }
+  .recap summary:hover { box-shadow: inset 0 0 0 1.5px var(--glow); }
+  .recap summary::-webkit-details-marker { display: none; }
+  .recap summary::before { content: ""; display: inline-block; margin-right: 8px; vertical-align: 1px; width: 8px; height: 8px; background: var(--glow); clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); transition: transform .15s; }
+  .recap[open] summary { background: var(--glow); color: var(--on-glow); box-shadow: none; }
+  .recap[open] summary::before { background: var(--on-glow); transform: rotate(45deg); }
+  .recap summary span { font-weight: 500; text-transform: none; letter-spacing: 0.02em; opacity: 0.8; }
+  .recap ul {
+    margin: 10px 0 0; padding: 12px 14px 12px 30px; font-size: 0.98rem;
+    background: var(--well); border-left: 3px solid var(--glow);
+    box-shadow: -6px 0 16px -8px var(--glow);
+  }
+  .recap ul li { margin: 4px 0; }
+  .recap ul li::marker { color: var(--glow); }
+  details:not(.recap) summary { cursor: pointer; color: var(--ink-soft); font-size: 0.92rem; margin-top: 16px; }
+  details p { font-size: 0.92rem; color: var(--ink-soft); }
+
+  footer { color: var(--ink-soft); font-size: 0.86rem; margin-top: 40px; display: flex; gap: 10px; align-items: center; justify-content: center; text-align: center; letter-spacing: 0.04em; }
+  footer svg { width: 22px; height: 22px; flex: none; color: var(--glow); }
 </style>
 </head>
 <body>
@@ -230,38 +406,154 @@
 
 <main>
   <header class="hero">
-    <div>
-      <p class="kicker">MCU catch-up planner</p>
-      <h1 class="display">Doomsday <span>Prep</span></h1>
-      <p>Tell us the last movie or show you watched. We'll find what you skipped along the way and line up everything you need before <em>Avengers: Doomsday</em>.</p>
-      <div class="countdown" id="countdown"></div>
+    <nav class="topbar" aria-label="Page">
+      <div class="brand"><i>DP</i>Doomsday Prep</div>
+      <div class="pills">
+        <a href="#start">Watch list</a>
+        <a href="#step3">Recaps</a>
+        <a href="#about">About</a>
+      </div>
+      <span class="chip-date">Dec 18, 2026</span>
+    </nav>
+
+    <div class="stage">
+      <div>
+        <p class="kicker">MCU catch-up planner</p>
+        <h1>Doomsday <span>Prep</span></h1>
+        <p>Tell us the last movie or show you watched. We'll find what you skipped along the way and line up everything you need before <em>Avengers: Doomsday</em>.</p>
+        <a class="cta" href="#start">Find my gaps
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M9 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <div class="product">
+        <div class="float">
+          <!-- An original iron mask, lit like a studio product shot -->
+          <svg viewBox="0 0 300 340" role="img" aria-label="A forged iron mask with glowing green eyes, floating">
+            <defs>
+              <!-- base metal: cool steel with a hot spot top-left -->
+              <radialGradient id="steel" cx="38%" cy="28%" r="80%">
+                <stop offset="0" stop-color="#E4E6E0"/>
+                <stop offset=".35" stop-color="#CDD0C8"/>
+                <stop offset=".7" stop-color="#8E978F"/>
+                <stop offset="1" stop-color="#4A5C52"/>
+              </radialGradient>
+              <linearGradient id="steelDark" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#9AA39B"/>
+                <stop offset="1" stop-color="#46564D"/>
+              </linearGradient>
+              <radialGradient id="cavity" cx="50%" cy="50%" r="60%">
+                <stop offset="0" stop-color="#15241D"/>
+                <stop offset="1" stop-color="#101A15"/>
+              </radialGradient>
+              <!-- lighting: embossed specular highlights + fine brushed grain -->
+              <filter id="lit" x="-10%" y="-10%" width="120%" height="120%">
+                <feGaussianBlur in="SourceAlpha" stdDeviation="5" result="h"/>
+                <feSpecularLighting in="h" surfaceScale="7" specularConstant="0.95" specularExponent="24" lighting-color="#E4E6E0" result="spec">
+                  <fePointLight x="70" y="-60" z="260"/>
+                </feSpecularLighting>
+                <feComposite in="spec" in2="SourceAlpha" operator="in" result="specIn"/>
+                <feTurbulence type="fractalNoise" baseFrequency="0.02 0.9" numOctaves="2" seed="7" result="n"/>
+                <feColorMatrix in="n" type="matrix" values="0 0 0 0 0.12  0 0 0 0 0.2  0 0 0 0 0.16  0 0 0 0.22 0" result="grain"/>
+                <feComposite in="grain" in2="SourceAlpha" operator="in" result="grainIn"/>
+                <feMerge result="base"><feMergeNode in="SourceGraphic"/><feMergeNode in="grainIn"/></feMerge>
+                <feComposite in="specIn" in2="base" operator="arithmetic" k1="0" k2="0.75" k3="1" k4="0"/>
+              </filter>
+              <filter id="glowF" x="-80%" y="-300%" width="260%" height="700%">
+                <feGaussianBlur stdDeviation="5" result="b1"/>
+                <feGaussianBlur stdDeviation="14" result="b2"/>
+                <feMerge><feMergeNode in="b2"/><feMergeNode in="b1"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+
+
+            <g class="svg-face">
+            <!-- mask plates, all lit by the same filter -->
+            <g filter="url(#lit)">
+              <!-- forehead / main face -->
+              <path d="M150 52 C116 54 90 72 84 104 L80 150 C80 196 92 236 112 262 L136 284 L164 284 L188 262 C208 236 220 196 220 150 L216 104 C210 72 184 54 150 52 Z" fill="url(#steel)"/>
+              <!-- brow ridge -->
+              <path d="M88 118 C110 110 132 114 150 124 C168 114 190 110 212 118 L210 134 C190 128 170 132 150 142 C130 132 110 128 90 134 Z" fill="url(#steelDark)"/>
+              <!-- cheek plates -->
+              <path d="M92 160 L128 170 L132 236 L112 252 C98 230 90 200 92 160 Z" fill="url(#steel)"/>
+              <path d="M208 160 L172 170 L168 236 L188 252 C202 230 210 200 208 160 Z" fill="url(#steel)"/>
+              <!-- nose bridge -->
+              <path d="M142 140 L158 140 L162 196 L150 206 L138 196 Z" fill="url(#steelDark)"/>
+              <!-- chin plate -->
+              <path d="M126 248 L174 248 L166 280 L134 280 Z" fill="url(#steelDark)"/>
+            </g>
+
+            <!-- recessed slits -->
+            <path d="M100 140 L136 148 L134 158 L102 152 Z" fill="url(#cavity)"/>
+            <path d="M200 140 L164 148 L166 158 L198 152 Z" fill="url(#cavity)"/>
+            <path d="M128 222 L172 222 L170 232 L130 232 Z" fill="url(#cavity)"/>
+
+            <!-- eye glow -->
+            <g class="eyes" filter="url(#glowF)">
+              <path d="M104 143 L133 150 L132 155 L105 150 Z" fill="#3DF57A"/>
+              <path d="M196 143 L167 150 L168 155 L195 150 Z" fill="#3DF57A"/>
+            </g>
+            <!-- faint green spill on the brow and cheeks -->
+            <ellipse cx="118" cy="148" rx="30" ry="16" fill="#3DF57A" opacity=".10"/>
+            <ellipse cx="182" cy="148" rx="30" ry="16" fill="#3DF57A" opacity=".10"/>
+
+            <!-- rivets, each with a tiny highlight -->
+            <g>
+              <g fill="#5E6A62"><circle cx="104" cy="92" r="4"/><circle cx="196" cy="92" r="4"/><circle cx="100" cy="196" r="3.5"/><circle cx="200" cy="196" r="3.5"/><circle cx="138" cy="270" r="3"/><circle cx="162" cy="270" r="3"/></g>
+              <g fill="#E4E6E0"><circle cx="103" cy="91" r="1.4"/><circle cx="195" cy="91" r="1.4"/><circle cx="99" cy="195" r="1.2"/><circle cx="199" cy="195" r="1.2"/><circle cx="137" cy="269" r="1"/><circle cx="161" cy="269" r="1"/></g>
+            </g>
+            <!-- specular streak down the centre seam -->
+            <path d="M150 56 L150 120" stroke="#E4E6E0" stroke-width="2" opacity=".55" stroke-linecap="round"/>
+            </g>
+          </svg>
+          <div id="mask3d" aria-hidden="true"></div>
+        </div>
+        <div class="shadow" aria-hidden="true"></div>
+        <div class="caption">The clock is ticking</div>
+      </div>
+
+      <div class="side">
+        <div class="big" id="days">–</div>
+        <div class="big-label" id="days-label">days until Doomsday</div>
+        <div class="depth">Choose your depth:</div>
+        <div class="dots" role="group" aria-label="How thorough">
+          <button data-tier="e" title="Essentials only">ESS</button>
+          <button data-tier="r" title="Essentials + recommended">REC</button>
+          <button data-tier="o" title="Everything">ALL</button>
+        </div>
+      </div>
     </div>
-    <svg class="clock" viewBox="0 0 200 200" role="img" aria-label="A clock a few minutes before midnight">
-      <circle cx="100" cy="100" r="92" fill="none" stroke="#CDD0C8" stroke-width="4"/>
-      <circle cx="100" cy="100" r="78" fill="none" stroke="#CDD0C8" stroke-width="1" stroke-dasharray="2 6" opacity=".6"/>
-      <!-- danger arc: the last stretch before midnight -->
-      <path d="M100 8 A92 92 0 0 0 46.9 25" fill="none" stroke="#3DF57A" stroke-width="10"/>
-      <g stroke="#CDD0C8" stroke-width="4">
-        <line x1="100" y1="16" x2="100" y2="34" stroke="#3DF57A" stroke-width="6"/>
-        <line x1="184" y1="100" x2="166" y2="100"/>
-        <line x1="100" y1="184" x2="100" y2="166"/>
-        <line x1="16" y1="100" x2="34" y2="100"/>
-      </g>
-      <g stroke="#CDD0C8" stroke-width="2" opacity=".7">
-        <line x1="142" y1="27.3" x2="137" y2="36"/><line x1="172.7" y1="58" x2="164" y2="63"/>
-        <line x1="172.7" y1="142" x2="164" y2="137"/><line x1="142" y1="172.7" x2="137" y2="164"/>
-        <line x1="58" y1="172.7" x2="63" y2="164"/><line x1="27.3" y1="142" x2="36" y2="137"/>
-        <line x1="27.3" y1="58" x2="36" y2="63"/><line x1="58" y1="27.3" x2="63" y2="36"/>
-      </g>
-      <line class="hand" x1="100" y1="100" x2="100" y2="52" stroke="#CDD0C8" stroke-width="8" stroke-linecap="square" transform="rotate(-4 100 100)"/>
-      <line class="hand minute" x1="100" y1="100" x2="100" y2="24" stroke="#3DF57A" stroke-width="5" stroke-linecap="square"/>
-      <circle cx="100" cy="100" r="9" fill="#3DF57A" stroke="#1F3329" stroke-width="3"/>
-    </svg>
+
+    <div class="orb" aria-hidden="true">
+      <!-- a small glowing energy core, the scene's second "product" -->
+      <svg viewBox="0 0 100 100">
+        <defs>
+          <radialGradient id="core" cx="40%" cy="35%" r="65%">
+            <stop offset="0" stop-color="#E4E6E0"/>
+            <stop offset=".25" stop-color="#A8FFC4"/>
+            <stop offset=".6" stop-color="#3DF57A"/>
+            <stop offset="1" stop-color="#1F3329"/>
+          </radialGradient>
+          <radialGradient id="ring" cx="50%" cy="50%" r="50%">
+            <stop offset=".7" stop-color="#CDD0C8"/>
+            <stop offset="1" stop-color="#46564D"/>
+          </radialGradient>
+        </defs>
+        <circle cx="50" cy="50" r="44" fill="url(#ring)"/>
+        <circle cx="50" cy="50" r="36" fill="#15241D"/>
+        <circle cx="50" cy="50" r="30" fill="url(#core)"/>
+        <ellipse cx="40" cy="36" rx="10" ry="6" fill="#E4E6E0" opacity=".55"/>
+        <g fill="#6C776F"><circle cx="50" cy="10" r="2.5"/><circle cx="90" cy="50" r="2.5"/><circle cx="50" cy="90" r="2.5"/><circle cx="10" cy="50" r="2.5"/></g>
+      </svg>
+      <span>Doom core</span>
+    </div>
   </header>
 
-  <section class="step">
-    <div class="step-head"><span class="step-num">01</span><h2>Last one you watched</h2></div>
-    <div class="card">
+  <div class="layout">
+  <div class="col-left">
+  <section class="step" id="start">
+    <div class="step-head"><span class="step-num">I</span><h2>Last one you watched</h2></div>
+    <div class="card plate">
       <p class="hint">Titles are in release order. If you watched out of order, pick the most recent one.</p>
       <div class="select-wrap">
         <select id="last" aria-label="Last movie or show you watched"></select>
@@ -271,8 +563,8 @@
   </section>
 
   <section class="step hidden" id="step2">
-    <div class="step-head"><span class="step-num">02</span><h2>Anything you skipped?</h2></div>
-    <div class="card">
+    <div class="step-head"><span class="step-num">II</span><h2>Anything you skipped?</h2></div>
+    <div class="card plate">
       <div class="label-row">
         <p class="hint" style="margin:0">Short on time? Open any title's Doomsday recap instead of watching it. MCU movies start ticked. Series and the older Fox X-Men films start unticked, since those are what most people miss. Untick anything you haven't seen.</p>
         <span><button class="linkish" id="all">Tick all</button> &nbsp; <button class="linkish" id="none">Untick all</button></span>
@@ -281,9 +573,16 @@
     </div>
   </section>
 
+  </div>
+  <div class="col-right">
+  <div class="card plate placeholder" id="placeholder">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><path d="M8 11l3 1M16 11l-3 1M9.5 16h5"/></svg>
+    <strong>Your road awaits</strong>
+    Pick the last title you watched and your watch list appears here.
+  </div>
   <section class="step hidden" id="step3">
-    <div class="step-head"><span class="step-num">03</span><h2>Your road to Doomsday</h2></div>
-    <div class="card">
+    <div class="step-head"><span class="step-num">III</span><h2>Your road to Doomsday</h2></div>
+    <div class="card plate">
       <div class="seg" role="group" aria-label="How thorough">
         <button data-tier="e">Essentials only</button>
         <button data-tier="r">+ Recommended</button>
@@ -307,8 +606,10 @@
       </details>
     </div>
   </section>
+  </div>
+  </div>
 
-  <footer>
+  <footer class="layout" id="about">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
     <span>A fan-made checklist, not affiliated with Marvel or Disney. Your answers are saved only in this browser.</span>
   </footer>
@@ -682,9 +983,8 @@ const svg = (id) => `<svg aria-hidden="true"><use href="#${id}"/></svg>`;
 // Countdown
 (function () {
   const days = Math.ceil((RELEASE - new Date()) / 86400000);
-  $("countdown").innerHTML = days > 0
-    ? `<b>${days}</b><span>day${days === 1 ? "" : "s"} until Doomsday · Dec 18, 2026</span>`
-    : `<b>Now</b><span>Doomsday is in theaters</span>`;
+  $("days").textContent = days > 0 ? days : "Now";
+  $("days-label").textContent = days > 0 ? `day${days === 1 ? "" : "s"} until Doomsday` : "Doomsday is in theaters";
 })();
 
 // Step 1 dropdown
@@ -728,13 +1028,15 @@ function render() {
   const last = state.last; // -1 = not chosen, -2 = none seen
   $("step2").classList.toggle("hidden", last < 0);
   $("step3").classList.toggle("hidden", last === -1);
+  $("placeholder").classList.toggle("hidden", last !== -1);
+  document.querySelectorAll("[data-tier]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.tier === state.tier)));
   if (last === -1) return;
 
   if (last >= 0) {
     fill($("past"), TITLES.slice(0, last + 1).map((t, i) => itemHTML(t, i, { checkbox: true })).join(""));
   }
 
-  document.querySelectorAll(".seg button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.tier === state.tier)));
+  document.querySelectorAll("[data-tier]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.tier === state.tier)));
 
   const maxRank = TIER_RANK[state.tier];
   const missed = [], upcoming = [];
@@ -769,9 +1071,193 @@ $("past").addEventListener("change", (e) => {
 });
 $("all").addEventListener("click", () => { for (let i = 0; i <= state.last; i++) state.seen[i] = true; save(); render(); });
 $("none").addEventListener("click", () => { for (let i = 0; i <= state.last; i++) state.seen[i] = false; save(); render(); });
-document.querySelectorAll(".seg button").forEach((b) => b.addEventListener("click", () => { state.tier = b.dataset.tier; save(); render(); }));
+document.querySelectorAll("[data-tier]").forEach((b) => b.addEventListener("click", () => { state.tier = b.dataset.tier; save(); render(); }));
 
 render();
+</script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+// A real-time 3D iron mask: sculpted face, reflective metal, glowing eyes.
+// If WebGL or the CDN is unavailable, the SVG drawing stays in place.
+import * as THREE from "three";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+
+const host = document.getElementById("mask3d");
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+try {
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.2;
+  host.appendChild(renderer.domElement);
+
+  const scene = new THREE.Scene();
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+
+  // Framing matches the SVG: the face takes ~68% of the box height.
+  const camera = new THREE.PerspectiveCamera(25, 300 / 340, 0.1, 50);
+  camera.position.set(0, 0.02, 6.6);
+
+  // ---------- Sculpted face as a height field ----------
+  const g = (x, s) => Math.exp(-(x / s) * (x / s));
+  const smooth = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+  function height(x, y) {
+    const ax = Math.abs(x);
+    let z = 0.62 * (1 - 0.62 * x * x - 0.10 * y * y);                          // overall curvature
+    z += 0.08 * g(y - 0.62, 0.35) * (1 - 0.5 * x * x);                          // forehead dome
+    z += 0.11 * g(y - 0.3, 0.07) * smooth(0.85, 0.2, ax);                       // brow ridge
+    z -= 0.16 * Math.exp(-(((ax - 0.36) / 0.22) ** 2 + ((y - 0.13) / 0.12) ** 2)); // eye sockets
+    z += 0.20 * g(x, 0.11) * smooth(0.32, 0.18, y) * smooth(-0.42, -0.25, y);  // nose bridge
+    z += 0.13 * Math.exp(-((x / 0.17) ** 2 + ((y + 0.3) / 0.11) ** 2));         // nose tip
+    z += 0.07 * Math.exp(-(((ax - 0.48) / 0.18) ** 2 + ((y + 0.12) / 0.16) ** 2)); // cheekbones
+    z -= 0.05 * Math.exp(-(((ax - 0.42) / 0.14) ** 2 + ((y + 0.42) / 0.16) ** 2)); // hollow cheeks
+    z += 0.05 * Math.exp(-((x / 0.26) ** 2 + ((y + 0.56) / 0.05) ** 2));        // upper lip
+    z += 0.04 * Math.exp(-((x / 0.24) ** 2 + ((y + 0.72) / 0.05) ** 2));        // lower lip
+    z += 0.07 * Math.exp(-((x / 0.3) ** 2 + ((y + 0.95) / 0.13) ** 2));         // chin
+    return z;
+  }
+  // Half-width of the face outline at height y.
+  function halfWidth(y) {
+    if (y >= 0) return 0.8 * Math.sqrt(Math.max(0, 1 - (y / 1.14) ** 2)) ** 0.8;
+    const t = -y / 1.08;
+    return t > 1 ? 0 : 0.8 * (1 - 0.48 * t ** 1.8) * Math.sqrt(Math.max(0, 1 - t ** 8));
+  }
+
+  const W = 2, H = 2.5, SX = 180, SY = 225;
+  const geo = new THREE.PlaneGeometry(W, H, SX, SY);
+  const pos = geo.attributes.position;
+  for (let i = 0; i < pos.count; i++) pos.setZ(i, height(pos.getX(i), pos.getY(i)));
+  geo.computeVertexNormals();
+
+  // Alpha map: the face outline, with eye and mouth slits cut out.
+  const toPx = (x, y, cw, ch) => [((x + W / 2) / W) * cw, (1 - (y + H / 2) / H) * ch];
+  const alphaCanvas = document.createElement("canvas");
+  alphaCanvas.width = 512; alphaCanvas.height = 640;
+  const ac = alphaCanvas.getContext("2d");
+  ac.fillStyle = "rgb(0,0,0)"; ac.fillRect(0, 0, 512, 640);
+  ac.fillStyle = "rgb(255,255,255)"; ac.beginPath();
+  for (let k = 0; k <= 200; k++) { const y = 1.14 - (k / 200) * 2.22; ac.lineTo(...toPx(halfWidth(y), y, 512, 640)); }
+  for (let k = 200; k >= 0; k--) { const y = 1.14 - (k / 200) * 2.22; ac.lineTo(...toPx(-halfWidth(y), y, 512, 640)); }
+  ac.fill();
+  const slits = [
+    [[-0.6, 0.17], [-0.17, 0.1], [-0.17, 0.045], [-0.58, 0.115]],
+    [[0.6, 0.17], [0.17, 0.1], [0.17, 0.045], [0.58, 0.115]],
+    [[-0.22, -0.635], [0.22, -0.635], [0.2, -0.675], [-0.2, -0.675]],
+  ];
+  ac.fillStyle = "rgb(0,0,0)";
+  for (const s of slits) { ac.beginPath(); s.forEach(([x, y]) => ac.lineTo(...toPx(x, y, 512, 640))); ac.closePath(); ac.fill(); }
+  const alphaMap = new THREE.CanvasTexture(alphaCanvas);
+
+  // Roughness map: fine brushed grain, hammer dents and a few scratches.
+  const rc = document.createElement("canvas"); rc.width = 512; rc.height = 640;
+  const r = rc.getContext("2d");
+  r.fillStyle = "rgb(95,95,95)"; r.fillRect(0, 0, 512, 640);
+  for (let i = 0; i < 9000; i++) { const v = 70 + Math.random() * 60; r.fillStyle = `rgba(${v},${v},${v},0.35)`; r.fillRect(Math.random() * 512, Math.random() * 640, 1, 6 + Math.random() * 30); }
+  for (let i = 0; i < 70; i++) { const v = 40 + Math.random() * 40; r.fillStyle = `rgba(${v},${v},${v},0.25)`; r.beginPath(); r.arc(Math.random() * 512, Math.random() * 640, 4 + Math.random() * 14, 0, 7); r.fill(); }
+  r.strokeStyle = "rgba(170,170,170,0.5)"; r.lineWidth = 1;
+  for (let i = 0; i < 26; i++) { const x = Math.random() * 512, y = Math.random() * 640, a = Math.random() * 6.3, l = 10 + Math.random() * 50; r.beginPath(); r.moveTo(x, y); r.lineTo(x + Math.cos(a) * l, y + Math.sin(a) * l); r.stroke(); }
+  const roughnessMap = new THREE.CanvasTexture(rc);
+
+  const metal = new THREE.MeshStandardMaterial({
+    color: 0xcdd0c8, metalness: 0.88, roughness: 0.5, roughnessMap,
+    alphaMap, alphaTest: 0.5, transparent: false, side: THREE.DoubleSide,
+    envMapIntensity: 1.6,
+  });
+  const face = new THREE.Mesh(geo, metal);
+
+  // Dark interior seen through the slits, with glowing eyes inside.
+  const inner = new THREE.Mesh(new THREE.PlaneGeometry(0.5, 0.09), new THREE.MeshBasicMaterial({ color: 0x101a15 }));
+  inner.position.set(0, -0.655, height(0, -0.655) - 0.04);
+  const glowMat = new THREE.MeshBasicMaterial({ color: 0x3df57a });
+  const eyeGlow = [];
+  for (const sx of [-1, 1]) {
+    const e = new THREE.Mesh(new THREE.PlaneGeometry(0.46, 0.09), glowMat);
+    e.position.set(sx * 0.38, 0.11, height(sx * 0.38, 0.11) - 0.015);
+    e.rotation.z = sx * 0.16;
+    eyeGlow.push(e);
+  }
+
+  // Soft additive halo so the eyes bloom.
+  const hc = document.createElement("canvas"); hc.width = hc.height = 128;
+  const h = hc.getContext("2d"); const grad = h.createRadialGradient(64, 64, 0, 64, 64, 64);
+  grad.addColorStop(0, "rgba(61,245,122,0.9)"); grad.addColorStop(0.35, "rgba(61,245,122,0.28)"); grad.addColorStop(1, "rgba(61,245,122,0)");
+  h.fillStyle = grad; h.fillRect(0, 0, 128, 128);
+  const haloMat = new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(hc), blending: THREE.AdditiveBlending, depthWrite: false, transparent: true });
+  const halos = [-1, 1].map((sx) => {
+    const s = new THREE.Sprite(haloMat);
+    s.position.set(sx * 0.38, 0.11, height(sx * 0.38, 0.11) + 0.08);
+    s.scale.set(1.25, 0.62, 1);
+    return s;
+  });
+
+  // Rivets: small domed studs sitting on the surface.
+  const rivetGeo = new THREE.SphereGeometry(0.032, 20, 12, 0, Math.PI * 2, 0, Math.PI / 2);
+  const rivetMat = new THREE.MeshStandardMaterial({ color: 0x8e978f, metalness: 1, roughness: 0.3 });
+  const rivets = [[-0.5, 0.72], [0.5, 0.72], [-0.66, 0.1], [0.66, 0.1], [-0.56, -0.4], [0.56, -0.4], [-0.16, -0.92], [0.16, -0.92]].map(([x, y]) => {
+    const m = new THREE.Mesh(rivetGeo, rivetMat);
+    m.position.set(x, y, height(x, y) - 0.005);
+    m.rotation.x = Math.PI / 2;
+    return m;
+  });
+
+  const mask = new THREE.Group();
+  // green light spilling from each eye onto the surrounding metal
+  const eyeLights = [-1, 1].map((sx) => { const l = new THREE.PointLight(0x3df57a, 1.6, 0.9, 2); l.position.set(sx * 0.38, 0.12, height(sx * 0.38, 0.12) + 0.12); return l; });
+  mask.add(inner, face, ...eyeGlow, ...halos, ...rivets, ...eyeLights);
+  mask.position.y = 0.03;
+  scene.add(mask);
+
+  // Studio lights: cool key from top-left, green rim from behind, faint green fill from below.
+  const key = new THREE.DirectionalLight(0xcdd0c8, 3.2); key.position.set(-3, 4, 5); scene.add(key);
+  const rim = new THREE.DirectionalLight(0x3df57a, 2.2); rim.position.set(3, 1, -4); scene.add(rim);
+  const fill = new THREE.PointLight(0x3df57a, 3, 6); fill.position.set(0, -1.6, 2.2); scene.add(fill);
+  scene.add(new THREE.AmbientLight(0xcdd0c8, 0.5));
+  const front = new THREE.DirectionalLight(0xcdd0c8, 1.2); front.position.set(1.5, 0.5, 6); scene.add(front);
+
+  function resize() {
+    const w = host.clientWidth, hh = host.clientHeight;
+    if (!w || !hh) return;
+    renderer.setSize(w, hh, false);
+    camera.aspect = w / hh; camera.updateProjectionMatrix();
+  }
+  new ResizeObserver(resize).observe(host); resize();
+
+  // Turn gently toward the pointer.
+  let tx = 0, ty = 0;
+  addEventListener("pointermove", (e) => {
+    tx = (e.clientX / innerWidth - 0.5) * 0.6;
+    ty = (e.clientY / innerHeight - 0.5) * 0.35;
+  });
+
+  let visible = true;
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(host);
+  const clock = new THREE.Clock();
+  function frame() {
+    const t = clock.getElapsedTime();
+    if (visible) {
+      const idle = reduceMotion ? 0 : Math.sin(t * 0.5) * 0.12;
+      mask.rotation.y += (tx + idle - mask.rotation.y) * 0.05;
+      mask.rotation.x += (ty - mask.rotation.x) * 0.05;
+      const pulse = reduceMotion ? 1 : 0.85 + 0.15 * Math.sin(t * 2);
+      halos.forEach((s) => (s.material.opacity = pulse));
+      fill.intensity = 2.4 + pulse;
+      renderer.render(scene, camera);
+    }
+    requestAnimationFrame(frame);
+  }
+  frame();
+  document.documentElement.classList.add("has-3d");
+} catch (err) {
+  host.remove(); // keep the SVG mask
+}
 </script>
 </body>
 </html>
