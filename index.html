@@ -10,43 +10,43 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   /*
-    Palette: two neutral primaries + one vibrant secondary. No pure white or black.
-      Slate  #2B3640  (primary, neutral)
-      Sand   #E6DECF  (primary, neutral)
-      Flare  #FF5A1F  (secondary, vibrant)
+    Doom palette: two neutral primaries + one vibrant secondary. No pure white or black.
+      Cloak  #1F3329  (primary, neutral: Doom's dark green cloak)
+      Iron   #CDD0C8  (primary, neutral: Doom's steel armour)
+      Glow   #3DF57A  (secondary, vibrant: Doom's green energy)
     Every other colour below is one of these three, or a mix of them.
   */
   :root {
-    --slate: #2B3640;
-    --sand: #E6DECF;
-    --flare: #FF5A1F;
+    --cloak: #1F3329;
+    --iron: #CDD0C8;
+    --glow: #3DF57A;
 
-    --bg: var(--sand);
-    --panel: #EDE7DB;              /* sand, lifted slightly toward slate-free light */
-    --ink: var(--slate);
-    --ink-soft: #5E6670;           /* slate mixed with sand */
-    --line: var(--slate);
-    --hair: #C9C1B2;               /* sand darkened */
-    --chip: #D8CFBE;               /* sand, one step down */
-    --on-flare: var(--slate);
-    --shadow: var(--slate);
+    --bg: var(--iron);
+    --panel: #D8DBD3;              /* iron, lifted */
+    --ink: var(--cloak);
+    --ink-soft: #4A5A50;           /* cloak mixed with iron */
+    --line: var(--cloak);
+    --hair: #A7AEA4;               /* iron darkened */
+    --chip: #BBC0B6;               /* iron, one step down */
+    --on-glow: var(--cloak);
+    --shadow: var(--cloak);
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #222B33;               /* slate, deepened */
-      --panel: var(--slate);
-      --ink: var(--sand);
-      --ink-soft: #A6A49D;         /* sand mixed with slate */
-      --line: var(--sand);
-      --hair: #44505B;
-      --chip: #36424D;
-      --on-flare: var(--slate);
-      --shadow: #161C21;
+      --bg: #15231C;               /* cloak, deepened */
+      --panel: var(--cloak);
+      --ink: var(--iron);
+      --ink-soft: #93A198;         /* iron mixed with cloak */
+      --line: var(--iron);
+      --hair: #33463B;
+      --chip: #2A3D33;
+      --on-glow: var(--cloak);
+      --shadow: #0D1612;
     }
   }
   :root[data-theme="dark"] {
-    --bg: #222B33; --panel: var(--slate); --ink: var(--sand); --ink-soft: #A6A49D;
-    --line: var(--sand); --hair: #44505B; --chip: #36424D; --on-flare: var(--slate); --shadow: #161C21;
+    --bg: #15231C; --panel: var(--cloak); --ink: var(--iron); --ink-soft: #93A198;
+    --line: var(--iron); --hair: #33463B; --chip: #2A3D33; --on-glow: var(--cloak); --shadow: #0D1612;
   }
 
   * { box-sizing: border-box; }
@@ -54,14 +54,12 @@
   body {
     margin: 0;
     background-color: var(--bg);
-    background-image: radial-gradient(var(--hair) 1px, transparent 1px);
-    background-size: 22px 22px;
     color: var(--ink);
     font: 16px/1.55 "Space Grotesk", system-ui, sans-serif;
   }
   main { max-width: 820px; margin: 0 auto; padding: 24px 16px 72px; }
   .display { font-family: "Bebas Neue", "Arial Narrow", sans-serif; font-weight: 400; letter-spacing: 0.02em; line-height: 0.95; }
-  :focus-visible { outline: 3px solid var(--flare); outline-offset: 2px; }
+  :focus-visible { outline: 3px solid var(--glow); outline-offset: 2px; }
 
   /* ---------- Hero ---------- */
   .hero {
@@ -69,10 +67,10 @@
     grid-template-columns: 1fr auto;
     gap: 20px;
     align-items: center;
-    background: var(--slate);
-    color: var(--sand);
+    background: var(--cloak);
+    color: var(--iron);
     border: 2px solid var(--line);
-    box-shadow: 6px 6px 0 var(--flare);
+    box-shadow: 6px 6px 0 var(--glow);
     padding: 28px 24px;
     margin-bottom: 36px;
     position: relative;
@@ -80,14 +78,14 @@
   }
   .hero::after { /* hazard stripe */
     content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 10px;
-    background: repeating-linear-gradient(-45deg, var(--flare) 0 12px, var(--slate) 12px 24px);
+    background: repeating-linear-gradient(-45deg, var(--glow) 0 12px, var(--cloak) 12px 24px);
   }
-  .kicker { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--flare); margin: 0 0 6px; }
+  .kicker { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--glow); margin: 0 0 6px; }
   .hero h1 { font-size: clamp(3.2rem, 11vw, 5.6rem); margin: 0; }
-  .hero h1 span { color: var(--flare); }
-  .hero p { margin: 12px 0 0; max-width: 46ch; color: #C9C4B9; }
-  .countdown { display: inline-flex; align-items: baseline; gap: 8px; margin-top: 18px; padding: 6px 12px; border: 2px solid var(--sand); }
-  .countdown b { font-family: "Bebas Neue", sans-serif; font-size: 2rem; font-weight: 400; color: var(--flare); line-height: 1; }
+  .hero h1 span { color: var(--glow); }
+  .hero p { margin: 12px 0 0; max-width: 46ch; color: #A9B3AB; }
+  .countdown { display: inline-flex; align-items: baseline; gap: 8px; margin-top: 18px; padding: 6px 12px; border: 2px solid var(--iron); }
+  .countdown b { font-family: "Bebas Neue", sans-serif; font-size: 2rem; font-weight: 400; color: var(--glow); line-height: 1; }
   .countdown span { font-size: 0.85rem; letter-spacing: 0.06em; text-transform: uppercase; }
   .clock { width: 168px; height: 168px; flex: none; }
   .clock .hand { transform-origin: 100px 100px; }
@@ -104,7 +102,7 @@
   .step-head { display: flex; align-items: flex-end; gap: 14px; margin-bottom: 12px; }
   .step-num {
     font-family: "Bebas Neue", sans-serif; font-size: 3.4rem; line-height: 0.8;
-    color: var(--flare); -webkit-text-stroke: 0; flex: none;
+    color: var(--ink); text-shadow: 3px 3px 0 var(--glow); flex: none;
   }
   .step h2 { font-family: "Bebas Neue", sans-serif; font-weight: 400; font-size: 2rem; line-height: 1; margin: 0; letter-spacing: 0.02em; }
   .card {
@@ -125,7 +123,7 @@
     padding: 12px 44px 12px 14px; font-weight: 500;
   }
   button { cursor: pointer; }
-  .linkish { background: none; border: 0; padding: 0; color: var(--ink); font-size: 0.85rem; font-weight: 700; text-decoration: underline; text-decoration-color: var(--flare); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+  .linkish { background: none; border: 0; padding: 0; color: var(--ink); font-size: 0.85rem; font-weight: 700; text-decoration: underline; text-decoration-color: var(--glow); text-decoration-thickness: 2px; text-underline-offset: 3px; }
   .label-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
 
   .seg { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
@@ -134,14 +132,14 @@
     box-shadow: 3px 3px 0 var(--shadow); transition: transform .08s, box-shadow .08s;
   }
   .seg button:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--shadow); }
-  .seg button[aria-pressed="true"] { background: var(--flare); color: var(--on-flare); box-shadow: 1px 1px 0 var(--shadow); transform: translate(2px, 2px); }
+  .seg button[aria-pressed="true"] { background: var(--glow); color: var(--on-glow); box-shadow: 1px 1px 0 var(--shadow); transform: translate(2px, 2px); }
 
   /* ---------- Timeline strip ---------- */
   .strip { display: flex; gap: 2px; height: 34px; align-items: stretch; margin: 4px 0 6px; }
   .strip i { flex: 1; background: var(--chip); }
   .strip i.seen { background: var(--ink); opacity: 0.85; }
-  .strip i.missed { background: var(--flare); }
-  .strip i.next { background: repeating-linear-gradient(-45deg, var(--flare) 0 3px, transparent 3px 6px); outline: 1px solid var(--flare); outline-offset: -1px; }
+  .strip i.missed { background: var(--glow); }
+  .strip i.next { background: repeating-linear-gradient(-45deg, var(--glow) 0 3px, transparent 3px 6px); outline: 1px solid var(--glow); outline-offset: -1px; }
   .strip i.here { position: relative; }
   .strip i.here::after { content: ""; position: absolute; left: 50%; top: -9px; transform: translateX(-50%); border: 6px solid transparent; border-top-color: var(--ink); }
   .strip-axis { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--ink-soft); letter-spacing: 0.06em; text-transform: uppercase; }
@@ -152,7 +150,7 @@
   /* ---------- Stats ---------- */
   .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border: 2px solid var(--line); margin-bottom: 18px; }
   .stats div { padding: 10px 12px; border-left: 2px solid var(--line); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft); }
-  .stats div:first-child { border-left: 0; background: var(--flare); color: var(--on-flare); }
+  .stats div:first-child { border-left: 0; background: var(--glow); color: var(--on-glow); }
   .stats strong { display: block; font-family: "Bebas Neue", sans-serif; font-weight: 400; font-size: 2.3rem; line-height: 1; color: inherit; }
   .stats div:not(:first-child) strong { color: var(--ink); }
   @media (max-width: 560px) {
@@ -163,8 +161,8 @@
 
   /* ---------- Lists ---------- */
   ul.items { list-style: none; margin: 0; padding: 0; }
-  ul.items li { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; border-top: 1px dashed var(--hair); }
-  ul.items li:first-child { border-top: 0; }
+  ul.items > li { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; border-top: 1px dashed var(--hair); }
+  ul.items > li:first-child { border-top: 0; }
   #past { max-height: 440px; overflow-y: auto; padding-right: 6px; }
   .icon { width: 34px; height: 34px; flex: none; display: grid; place-items: center; border: 2px solid var(--line); background: var(--bg); }
   .icon svg { width: 18px; height: 18px; }
@@ -173,24 +171,38 @@
   .meta { color: var(--ink-soft); font-size: 0.82rem; }
   .note { font-size: 0.9rem; margin-top: 2px; }
   .tag { display: inline-block; font-size: 0.66rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 1px 6px; margin-left: 8px; vertical-align: 2px; white-space: nowrap; border: 1.5px solid var(--line); }
-  .tag.e { background: var(--flare); border-color: var(--flare); color: var(--on-flare); }
+  .tag.e { background: var(--glow); border-color: var(--glow); color: var(--on-glow); }
   .tag.r { background: var(--ink); border-color: var(--ink); color: var(--bg); }
   .tag.o { color: var(--ink-soft); border-color: var(--hair); }
-  li.essential .icon { background: var(--flare); border-color: var(--line); }
-  li.essential .icon svg { color: var(--on-flare); }
+  li.essential .icon { background: var(--glow); border-color: var(--line); }
+  li.essential .icon svg { color: var(--on-glow); }
 
   /* custom checkbox */
   .check { position: relative; flex: none; width: 26px; height: 26px; margin-top: 4px; }
   .check input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
   .check span { position: absolute; inset: 0; border: 2px solid var(--line); background: var(--bg); display: grid; place-items: center; }
-  .check span svg { width: 16px; height: 16px; opacity: 0; color: var(--on-flare); }
-  .check input:checked + span { background: var(--flare); }
+  .check span svg { width: 16px; height: 16px; opacity: 0; color: var(--on-glow); }
+  .check input:checked + span { background: var(--glow); }
   .check input:checked + span svg { opacity: 1; }
-  .check input:focus-visible + span { outline: 3px solid var(--flare); outline-offset: 2px; }
+  .check input:focus-visible + span { outline: 3px solid var(--glow); outline-offset: 2px; }
 
   .empty { display: block !important; text-align: center; padding: 28px 0 !important; color: var(--ink-soft); }
   .empty svg { width: 64px; height: 64px; display: block; margin: 0 auto 8px; }
-  details summary { cursor: pointer; color: var(--ink-soft); font-size: 0.88rem; margin-top: 14px; }
+  ul.items > li > div { min-width: 0; flex: 1; }
+  .recap { margin-top: 8px; }
+  .recap summary {
+    display: inline-flex; align-items: center; gap: 6px; cursor: pointer; list-style: none;
+    font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--ink); border: 2px solid var(--line); padding: 3px 10px; background: var(--bg); margin: 0;
+  }
+  .recap summary::-webkit-details-marker { display: none; }
+  .recap summary::before { content: "+"; font-size: 1rem; line-height: 1; }
+  .recap[open] summary { background: var(--glow); color: var(--on-glow); }
+  .recap[open] summary::before { content: "\2212"; }
+  .recap summary span { font-weight: 500; text-transform: none; letter-spacing: 0; opacity: 0.75; }
+  .recap ul { margin: 8px 0 0; padding: 10px 12px 10px 28px; border-left: 4px solid var(--glow); background: var(--bg); font-size: 0.9rem; }
+  .recap ul li { margin: 3px 0; }
+  details:not(.recap) summary { cursor: pointer; color: var(--ink-soft); font-size: 0.88rem; margin-top: 14px; }
   details p { font-size: 0.88rem; color: var(--ink-soft); }
 
   footer { color: var(--ink-soft); font-size: 0.8rem; margin-top: 36px; display: flex; gap: 10px; align-items: center; }
@@ -225,25 +237,25 @@
       <div class="countdown" id="countdown"></div>
     </div>
     <svg class="clock" viewBox="0 0 200 200" role="img" aria-label="A clock a few minutes before midnight">
-      <circle cx="100" cy="100" r="92" fill="none" stroke="#E6DECF" stroke-width="4"/>
-      <circle cx="100" cy="100" r="78" fill="none" stroke="#E6DECF" stroke-width="1" stroke-dasharray="2 6" opacity=".6"/>
+      <circle cx="100" cy="100" r="92" fill="none" stroke="#CDD0C8" stroke-width="4"/>
+      <circle cx="100" cy="100" r="78" fill="none" stroke="#CDD0C8" stroke-width="1" stroke-dasharray="2 6" opacity=".6"/>
       <!-- danger arc: the last stretch before midnight -->
-      <path d="M100 8 A92 92 0 0 0 46.9 25" fill="none" stroke="#FF5A1F" stroke-width="10"/>
-      <g stroke="#E6DECF" stroke-width="4">
-        <line x1="100" y1="16" x2="100" y2="34" stroke="#FF5A1F" stroke-width="6"/>
+      <path d="M100 8 A92 92 0 0 0 46.9 25" fill="none" stroke="#3DF57A" stroke-width="10"/>
+      <g stroke="#CDD0C8" stroke-width="4">
+        <line x1="100" y1="16" x2="100" y2="34" stroke="#3DF57A" stroke-width="6"/>
         <line x1="184" y1="100" x2="166" y2="100"/>
         <line x1="100" y1="184" x2="100" y2="166"/>
         <line x1="16" y1="100" x2="34" y2="100"/>
       </g>
-      <g stroke="#E6DECF" stroke-width="2" opacity=".7">
+      <g stroke="#CDD0C8" stroke-width="2" opacity=".7">
         <line x1="142" y1="27.3" x2="137" y2="36"/><line x1="172.7" y1="58" x2="164" y2="63"/>
         <line x1="172.7" y1="142" x2="164" y2="137"/><line x1="142" y1="172.7" x2="137" y2="164"/>
         <line x1="58" y1="172.7" x2="63" y2="164"/><line x1="27.3" y1="142" x2="36" y2="137"/>
         <line x1="27.3" y1="58" x2="36" y2="63"/><line x1="58" y1="27.3" x2="63" y2="36"/>
       </g>
-      <line class="hand" x1="100" y1="100" x2="100" y2="52" stroke="#E6DECF" stroke-width="8" stroke-linecap="square" transform="rotate(-4 100 100)"/>
-      <line class="hand minute" x1="100" y1="100" x2="100" y2="24" stroke="#FF5A1F" stroke-width="5" stroke-linecap="square"/>
-      <circle cx="100" cy="100" r="9" fill="#FF5A1F" stroke="#2B3640" stroke-width="3"/>
+      <line class="hand" x1="100" y1="100" x2="100" y2="52" stroke="#CDD0C8" stroke-width="8" stroke-linecap="square" transform="rotate(-4 100 100)"/>
+      <line class="hand minute" x1="100" y1="100" x2="100" y2="24" stroke="#3DF57A" stroke-width="5" stroke-linecap="square"/>
+      <circle cx="100" cy="100" r="9" fill="#3DF57A" stroke="#1F3329" stroke-width="3"/>
     </svg>
   </header>
 
@@ -262,7 +274,7 @@
     <div class="step-head"><span class="step-num">02</span><h2>Anything you skipped?</h2></div>
     <div class="card">
       <div class="label-row">
-        <p class="hint" style="margin:0">Movies start ticked and series start unticked, since series are what most people miss. Untick anything you haven't seen.</p>
+        <p class="hint" style="margin:0">Short on time? Open any title's Doomsday recap instead of watching it. MCU movies start ticked. Series and the older Fox X-Men films start unticked, since those are what most people miss. Untick anything you haven't seen.</p>
         <span><button class="linkish" id="all">Tick all</button> &nbsp; <button class="linkish" id="none">Untick all</button></span>
       </div>
       <ul class="items" id="past"></ul>
@@ -279,11 +291,11 @@
       </div>
 
       <div class="strip" id="strip" aria-hidden="true"></div>
-      <div class="strip-axis"><span>2008</span><span>Doomsday</span></div>
+      <div class="strip-axis"><span>2000</span><span>Doomsday</span></div>
       <div class="legend">
         <span><i style="background:var(--ink);opacity:.85"></i>Seen</span>
-        <span><i style="background:var(--flare)"></i>Missed</span>
-        <span><i style="background:repeating-linear-gradient(-45deg,var(--flare) 0 3px,transparent 3px 6px);outline:1px solid var(--flare)"></i>Still to come</span>
+        <span><i style="background:var(--glow)"></i>Missed</span>
+        <span><i style="background:repeating-linear-gradient(-45deg,var(--glow) 0 3px,transparent 3px 6px);outline:1px solid var(--glow)"></i>Still to come</span>
         <span><i style="background:var(--chip)"></i>Skippable at this level</span>
       </div>
 
@@ -305,15 +317,18 @@
 <script>
 // [title, release, type (Movie/Series/Special), tier (e/r/o), note]
 const TITLES = [
+  ["X-Men", "2000", "X-Men film", "e", "Fox film. Professor X, Magneto, Mystique, Cyclops and Nightcrawler's actors all return in Doomsday."],
+  ["X2", "2003", "X-Men film", "r", "Fox film. Introduces Nightcrawler."],
   ["Iron Man", "2008", "Movie", "r", "Tony Stark builds the suit. This is where it all starts."],
   ["The Incredible Hulk", "2008", "Movie", "o", "Introduces General Ross, who becomes important much later."],
   ["Iron Man 2", "2010", "Movie", "o", ""],
   ["Thor", "2011", "Movie", "r", "Thor and Loki's story begins."],
-  ["Captain America: The First Avenger", "2011", "Movie", "r", "Steve Rogers, Bucky, and the Tesseract."],
+  ["Captain America: The First Avenger", "2011", "Movie", "r", "Steve Rogers, Bucky, and Peggy Carter, who are all back for Doomsday."],
   ["The Avengers", "2012", "Movie", "e", "The team forms. Everything after builds on it."],
   ["Iron Man 3", "2013", "Movie", "o", ""],
   ["Thor: The Dark World", "2013", "Movie", "o", ""],
   ["Captain America: The Winter Soldier", "2014", "Movie", "r", "Bucky returns and S.H.I.E.L.D. falls."],
+  ["X-Men: Days of Future Past", "2014", "X-Men film", "r", "Fox film. Resets the original X-Men timeline."],
   ["Guardians of the Galaxy", "2014", "Movie", "r", ""],
   ["Avengers: Age of Ultron", "2015", "Movie", "r", "Introduces Wanda and Vision."],
   ["Ant-Man", "2015", "Movie", "o", "First look at the Quantum Realm."],
@@ -331,29 +346,30 @@ const TITLES = [
   ["WandaVision", "2021", "Series", "r", "Wanda's grief, and how she becomes the Scarlet Witch."],
   ["The Falcon and the Winter Soldier", "2021", "Series", "e", "Sam Wilson takes up the shield. Introduces John Walker."],
   ["Loki (Season 1)", "2021", "Series", "e", "The TVA and the multiverse breaks open."],
-  ["Black Widow", "2021", "Movie", "r", "Introduces Yelena, who leads the Thunderbolts."],
+  ["Black Widow", "2021", "Movie", "r", "Introduces Yelena and Red Guardian, both in Doomsday."],
   ["What If...? (Season 1)", "2021", "Series", "o", ""],
-  ["Shang-Chi and the Legend of the Ten Rings", "2021", "Movie", "r", ""],
+  ["Shang-Chi and the Legend of the Ten Rings", "2021", "Movie", "e", "Shang-Chi is confirmed for Doomsday."],
   ["Eternals", "2021", "Movie", "o", ""],
   ["Hawkeye", "2021", "Series", "o", ""],
   ["Spider-Man: No Way Home", "2021", "Movie", "e", "The multiverse spills over, and the world forgets Peter Parker."],
   ["Moon Knight", "2022", "Series", "o", ""],
   ["Doctor Strange in the Multiverse of Madness", "2022", "Movie", "e", "Incursions, alternate universes, and the Illuminati."],
   ["Ms. Marvel", "2022", "Series", "o", ""],
-  ["Thor: Love and Thunder", "2022", "Movie", "o", ""],
+  ["Thor: Love and Thunder", "2022", "Movie", "r", "Where Thor's story was left before Doomsday."],
   ["She-Hulk: Attorney at Law", "2022", "Series", "o", ""],
   ["Werewolf by Night", "2022", "Special", "o", ""],
-  ["Black Panther: Wakanda Forever", "2022", "Movie", "r", "Shuri becomes Black Panther, and Namor appears."],
+  ["Black Panther: Wakanda Forever", "2022", "Movie", "e", "Shuri becomes Black Panther and Namor appears. Both, plus M'Baku, are in Doomsday."],
   ["The Guardians of the Galaxy Holiday Special", "2022", "Special", "o", ""],
-  ["Ant-Man and the Wasp: Quantumania", "2023", "Movie", "r", ""],
+  ["Ant-Man and the Wasp: Quantumania", "2023", "Movie", "r", "Scott and Cassie Lang, both back for Doomsday, run into the multiverse."],
   ["Guardians of the Galaxy Vol. 3", "2023", "Movie", "o", ""],
   ["Secret Invasion", "2023", "Series", "o", ""],
   ["Loki (Season 2)", "2023", "Series", "e", "What happens to the TVA and the multiverse after Season 1."],
   ["The Marvels", "2023", "Movie", "r", "Ends with a doorway to the X-Men."],
   ["What If...? (Season 2)", "2023", "Series", "o", ""],
   ["Echo", "2024", "Series", "o", ""],
+  ["X-Men '97", "2024", "Series", "o", "Animated X-Men series. A fun refresher on the team."],
   ["Deadpool & Wolverine", "2024", "Movie", "e", "The TVA, dying timelines, and the end of the Fox universe."],
-  ["Agatha All Along", "2024", "Series", "o", ""],
+  ["Agatha All Along", "2024", "Series", "o", "Adds to the witchcraft side of the MCU."],
   ["What If...? (Season 3)", "2024", "Series", "o", ""],
   ["Your Friendly Neighborhood Spider-Man", "2025", "Series", "o", ""],
   ["Captain America: Brave New World", "2025", "Movie", "e", "Sam Wilson's first film as Captain America. Sets up a new Avengers team."],
@@ -365,16 +381,298 @@ const TITLES = [
   ["Marvel Zombies", "2025", "Series", "o", ""],
   ["Wonder Man", "2026", "Series", "o", ""],
   ["Daredevil: Born Again (Season 2)", "2026", "Series", "o", ""],
-  ["Spider-Man: Brand New Day", "2026", "Movie", "r", "Spider-Man's first film after No Way Home."],
+  ["Spider-Man: Brand New Day", "2026", "Movie", "r", "The most recent film before Doomsday, and Spider-Man's first after No Way Home."],
+  ["VisionQuest", "2026", "Series", "r", "Paul Bettany returns as Vision. Released Oct 2026, just ahead of Doomsday."],
 ];
+// Spoiler recaps: the things from each title that matter going into Doomsday.
+const RECAP = {
+  "X-Men": [
+    "Professor Charles Xavier runs a school that trains young mutants. His team, the X-Men, includes Cyclops and Jean Grey.",
+    "His old friend Magneto believes mutants should rule over humans and leads the Brotherhood, including the shapeshifter Mystique.",
+    "Wolverine and Rogue join the X-Men. They stop Magneto's plan to turn world leaders into mutants, and he's locked in a plastic prison.",
+    "Why it matters: Patrick Stewart, Ian McKellen, Rebecca Romijn and James Marsden all return in these roles for Doomsday.",
+  ],
+  "X2": [
+    "Introduces Nightcrawler, a gentle teleporting mutant (Alan Cumming, who returns in Doomsday).",
+    "Colonel Stryker tries to use Xavier's powers to kill every mutant, forcing the X-Men and Magneto into an uneasy alliance.",
+    "Jean Grey sacrifices herself to save the team. Mystique leaves with Magneto.",
+  ],
+  "Iron Man": [
+    "Tony Stark is captured, builds a suit of armour to escape, and stops making weapons.",
+    "He publicly announces \"I am Iron Man.\"",
+    "Nick Fury appears after the credits to talk about the Avengers Initiative.",
+  ],
+  "The Incredible Hulk": [
+    "Bruce Banner is on the run, trying to control the Hulk.",
+    "General Thaddeus Ross hunts him. Ross later becomes US President and the Red Hulk in Brave New World.",
+  ],
+  "Iron Man 2": [
+    "Introduces Natasha Romanoff (Black Widow) and James Rhodes as War Machine.",
+  ],
+  "Thor": [
+    "Thor is banished to Earth to learn humility, and earns back his hammer.",
+    "Loki learns he was adopted from the Frost Giants, turns on his family, and falls into space.",
+  ],
+  "Captain America: The First Avenger": [
+    "Steve Rogers becomes a super-soldier in World War II.",
+    "His best friend Bucky Barnes falls from a train and is presumed dead. Peggy Carter is the love of Steve's life.",
+    "Steve crashes into the Arctic and wakes up 70 years later.",
+    "Why it matters: Steve, Bucky and Peggy are all reported to be in Doomsday.",
+  ],
+  "The Avengers": [
+    "Loki invades New York with an alien army, using the Tesseract (the Space Stone).",
+    "Iron Man, Captain America, Thor, Hulk, Black Widow and Hawkeye unite as the Avengers.",
+    "The post-credits scene reveals Thanos was behind the invasion.",
+  ],
+  "Iron Man 3": [
+    "Tony struggles with anxiety after New York. Mostly a standalone story.",
+  ],
+  "Thor: The Dark World": [
+    "Introduces the Aether, later revealed as the Reality Stone.",
+    "Loki fakes his death and secretly takes Odin's throne.",
+  ],
+  "Captain America: The Winter Soldier": [
+    "HYDRA has been secretly running S.H.I.E.L.D., which collapses when it's exposed.",
+    "Bucky is alive, brainwashed by HYDRA into the assassin the Winter Soldier.",
+    "Introduces Sam Wilson (Falcon), who becomes Steve's partner.",
+  ],
+  "X-Men: Days of Future Past": [
+    "In a bleak future, Wolverine's mind is sent back to 1973 to stop Mystique from triggering a war against mutants.",
+    "He succeeds, which rewrites history and gives the original X-Men a happier future.",
+    "Why it matters: it bridges the original cast with their younger versions and resets the old X-Men timeline.",
+  ],
+  "Guardians of the Galaxy": [
+    "Star-Lord, Gamora, Drax, Rocket and Groot team up to protect the Power Stone.",
+    "Gamora is Thanos's adopted daughter.",
+  ],
+  "Avengers: Age of Ultron": [
+    "Tony builds Ultron to protect the world, but it turns evil.",
+    "Introduces Wanda Maximoff (Scarlet Witch). Her brother Pietro dies.",
+    "Vision is born, powered by the Mind Stone.",
+    "The battle destroys the city of Sokovia, which leads to Civil War.",
+  ],
+  "Ant-Man": [
+    "Thief Scott Lang becomes Ant-Man, mentored by Hank Pym.",
+    "He shrinks into the Quantum Realm and escapes. His daughter Cassie is his reason for everything.",
+  ],
+  "Captain America: Civil War": [
+    "The Sokovia Accords would put the Avengers under government control. Tony supports them and Steve refuses.",
+    "Zemo frames Bucky, and Tony learns that Bucky killed his parents while brainwashed. The Avengers split.",
+    "Introduces T'Challa (Black Panther) and Peter Parker (Spider-Man).",
+    "Steve leaves his shield behind. Bucky goes into cryo-sleep in Wakanda.",
+  ],
+  "Doctor Strange": [
+    "Surgeon Stephen Strange learns the mystic arts and protects the Time Stone.",
+    "First real hint that there's a wider multiverse.",
+  ],
+  "Guardians of the Galaxy Vol. 2": [
+    "Star-Lord meets his father Ego. Mostly standalone.",
+  ],
+  "Spider-Man: Homecoming": [
+    "Peter Parker, now mentored by Tony, fights the Vulture in his first solo film.",
+  ],
+  "Thor: Ragnarok": [
+    "Thor's sister Hela destroys Asgard. Thor becomes king and leads the surviving Asgardians away.",
+    "Thor and Loki finally reconcile. Hulk and Valkyrie join him.",
+  ],
+  "Black Panther": [
+    "T'Challa becomes king of Wakanda after defeating Killmonger.",
+    "Introduces Shuri, his genius sister, and M'Baku, leader of the Jabari. Both are in Doomsday.",
+    "Wakanda reveals itself to the world.",
+  ],
+  "Avengers: Infinity War": [
+    "Thanos collects all six Infinity Stones. Loki, Gamora and Vision are killed along the way.",
+    "The heroes make a last stand in Wakanda and lose.",
+    "Thanos snaps his fingers and half of all life disappears, including Black Panther, Spider-Man and Bucky.",
+  ],
+  "Ant-Man and the Wasp": [
+    "Hope van Dyne becomes the Wasp, and her mother Janet is rescued from the Quantum Realm.",
+    "Scott is left stuck in the Quantum Realm when the Snap happens.",
+  ],
+  "Captain Marvel": [
+    "Set in the 1990s. Carol Danvers gains cosmic powers and discovers the Skrulls are refugees, not villains.",
+  ],
+  "Avengers: Endgame": [
+    "Five years after the Snap, the Avengers travel through time to collect the stones and undo it.",
+    "Natasha sacrifices herself. Tony uses the stones to defeat Thanos and dies.",
+    "Steve returns the stones, stays in the past to live with Peggy, and hands his shield to Sam.",
+    "Thor leaves Earth with the Guardians. A 2012 version of Loki escapes with the Tesseract, which leads straight into Loki.",
+  ],
+  "Spider-Man: Far From Home": [
+    "Mysterio reveals to the world that Peter Parker is Spider-Man.",
+  ],
+  "WandaVision": [
+    "Grieving Vision, Wanda traps a town inside a fake sitcom reality.",
+    "She becomes the Scarlet Witch and takes the dark spellbook, the Darkhold.",
+    "S.W.O.R.D. rebuilds a \"White Vision\" without emotions, who regains his memories and flies off.",
+  ],
+  "The Falcon and the Winter Soldier": [
+    "Sam Wilson accepts the shield and becomes the new Captain America.",
+    "Bucky starts making amends for his past.",
+    "John Walker is briefly made Captain America, disgraced, then recruited by Valentina Allegra de Fontaine as US Agent.",
+  ],
+  "Loki (Season 1)": [
+    "The 2012 Loki is arrested by the Time Variance Authority (TVA), which deletes any timeline that branches away from the 'Sacred Timeline'.",
+    "He works with agent Mobius and falls for Sylvie, a female Loki variant.",
+    "At the end of time they meet He Who Remains, who created the TVA. Sylvie kills him, and the timeline splits into a multiverse.",
+  ],
+  "Black Widow": [
+    "Set between Civil War and Infinity War. Natasha reunites with her fake Russian 'family'.",
+    "Introduces Yelena Belova and Red Guardian, who lead into Thunderbolts* and Doomsday.",
+    "After the credits, Valentina tells Yelena that Clint Barton caused Natasha's death.",
+  ],
+  "What If...? (Season 1)": [
+    "Animated what-if stories about alternate universes. Not needed for the main plot.",
+  ],
+  "Shang-Chi and the Legend of the Ten Rings": [
+    "Shang-Chi stops his father Wenwu from unleashing a monster, and inherits the Ten Rings.",
+    "After the credits, Wong and Bruce Banner find the rings are sending a signal into space.",
+    "Why it matters: Simu Liu returns as Shang-Chi in Doomsday.",
+  ],
+  "Eternals": [
+    "Ancient immortal beings stop a Celestial from being born out of Earth. Mostly standalone.",
+  ],
+  "Hawkeye": [
+    "Clint Barton trains Kate Bishop as his successor.",
+    "Yelena comes after Clint over Natasha's death, then learns the truth.",
+  ],
+  "Spider-Man: No Way Home": [
+    "Doctor Strange's spell goes wrong and pulls villains from other universes into Peter's world.",
+    "Two other Spider-Men from those universes help Peter. Aunt May dies.",
+    "To seal the multiverse, Strange makes the whole world forget who Peter Parker is.",
+  ],
+  "Moon Knight": [
+    "Marc Spector, a man with dissociative identity disorder, serves the Egyptian god Khonshu. Standalone.",
+  ],
+  "Doctor Strange in the Multiverse of Madness": [
+    "America Chavez can travel between universes. Wanda, corrupted by the Darkhold, hunts her for her power.",
+    "On another Earth, Strange meets the Illuminati, including Patrick Stewart's Professor X, who is killed.",
+    "Explains 'incursions': when two universes collide, both are destroyed.",
+    "Wanda appears to die destroying the Darkhold. After the credits, Clea warns Strange of a new incursion.",
+  ],
+  "Ms. Marvel": [
+    "Teenager Kamala Khan gets powers from a family bangle.",
+    "The finale hints she is a mutant, the first mention of mutants in the main MCU.",
+  ],
+  "Thor: Love and Thunder": [
+    "Thor fights Gorr the God Butcher. Jane Foster becomes Mighty Thor and dies.",
+    "Thor ends up adopting Gorr's daughter, Love.",
+  ],
+  "She-Hulk: Attorney at Law": [
+    "Bruce's cousin Jennifer Walters becomes She-Hulk. A legal comedy, mostly standalone.",
+  ],
+  "Werewolf by Night": [
+    "A standalone horror special introducing monster hunters and Man-Thing.",
+  ],
+  "Black Panther: Wakanda Forever": [
+    "T'Challa has died. Wakanda is pressured by outsiders over its vibranium.",
+    "Namor, king of the underwater nation Talokan, threatens war.",
+    "Shuri becomes the new Black Panther, then spares Namor and makes an uneasy peace.",
+    "Why it matters: Shuri, Namor and M'Baku are all confirmed in Doomsday.",
+  ],
+  "The Guardians of the Galaxy Holiday Special": [
+    "A short Christmas special. Reveals that Mantis is Star-Lord's half-sister.",
+  ],
+  "Ant-Man and the Wasp: Quantumania": [
+    "Scott, Hope and a now-teenage Cassie are pulled into the Quantum Realm.",
+    "They fight Kang the Conqueror. Cassie becomes a hero herself.",
+    "Note: Marvel has since moved away from the Kang storyline, so its sequel hooks are no longer expected to matter.",
+  ],
+  "Guardians of the Galaxy Vol. 3": [
+    "Rocket's origin story and the end of the original Guardians team.",
+  ],
+  "Secret Invasion": [
+    "Nick Fury uncovers Skrulls hidden on Earth. Reveals that Rhodey had been replaced by a Skrull.",
+  ],
+  "Loki (Season 2)": [
+    "The multiverse keeps branching and the TVA can't hold it together.",
+    "Loki learns to control time-slipping and tries to save every timeline, not just one.",
+    "He takes He Who Remains' place at the end of time, holding the branching timelines together.",
+    "The TVA's new job is to protect the multiverse instead of pruning it.",
+  ],
+  "The Marvels": [
+    "Carol Danvers, Monica Rambeau and Kamala Khan keep swapping places when they use their powers.",
+    "Monica ends up trapped in another universe, where she meets Kelsey Grammer's Beast from the X-Men. He's also in Doomsday.",
+    "Kamala starts recruiting young heroes, including Kate Bishop.",
+  ],
+  "What If...? (Season 2)": [
+    "More animated alternate-universe stories. Not needed for the main plot.",
+  ],
+  "Echo": [
+    "Maya Lopez returns home and confronts Kingpin. Standalone.",
+  ],
+  "X-Men '97": [
+    "A continuation of the 1990s animated X-Men series. A good refresher on the team, but not part of the MCU timeline.",
+  ],
+  "Deadpool & Wolverine": [
+    "The TVA tells Deadpool his universe is dying because its Wolverine is gone. He recruits a Wolverine variant from another universe.",
+    "In the Void, where the TVA dumps erased things, they meet forgotten heroes, including Channing Tatum's Gambit, who is in Doomsday.",
+    "They defeat Cassandra Nova, Professor X's twin, and save Deadpool's universe.",
+  ],
+  "Agatha All Along": [
+    "Agatha Harkness and a coven of witches walk the dangerous Witches' Road. Ties into Wanda's legacy.",
+  ],
+  "What If...? (Season 3)": [
+    "The final batch of animated alternate-universe stories.",
+  ],
+  "Your Friendly Neighborhood Spider-Man": [
+    "An animated retelling of Peter Parker's early days, set outside the main timeline.",
+  ],
+  "Captain America: Brave New World": [
+    "Sam Wilson's first film as Captain America, with Joaquin Torres as the new Falcon (also in Doomsday).",
+    "President Ross pushes a global deal over adamantium found on the giant Celestial in the ocean, then transforms into the Red Hulk.",
+    "Sam decides to rebuild the Avengers.",
+    "After the credits, Samuel Sterns warns that other worlds are coming.",
+  ],
+  "Daredevil: Born Again (Season 1)": [
+    "Matt Murdock faces Wilson Fisk, now Mayor of New York. A street-level story.",
+  ],
+  "Thunderbolts*": [
+    "Valentina tries to dispose of her expendable agents: Yelena, Red Guardian, John Walker, Ghost and Taskmaster. They team up with Bucky.",
+    "They meet Bob, who becomes the hugely powerful Sentry and his dark side, the Void. They save him rather than defeat him.",
+    "Valentina rebrands the team as the 'New Avengers'.",
+    "After the credits, a ship from another universe arrives, carrying the Fantastic Four.",
+  ],
+  "Ironheart": [
+    "Genius teen Riri Williams builds her own armour and clashes with a magic-wielding gang leader.",
+  ],
+  "The Fantastic Four: First Steps": [
+    "Set on another Earth (Earth-828). Reed, Sue, Johnny and Ben are that world's beloved heroes.",
+    "Galactus wants to consume Earth, and wants Sue and Reed's newborn son Franklin, who has cosmic potential.",
+    "The family saves Earth together.",
+    "The post-credits scene shows Doctor Doom with Franklin, which leads straight into Doomsday.",
+  ],
+  "Eyes of Wakanda": [
+    "Animated stories of Wakandan warriors through history, recovering vibranium artefacts.",
+  ],
+  "Marvel Zombies": [
+    "An animated survival story in a zombie universe. Not part of the main timeline.",
+  ],
+  "Wonder Man": [
+    "Actor Simon Williams, who has hidden powers, tries to land a superhero movie role.",
+  ],
+  "Daredevil: Born Again (Season 2)": [
+    "Continues Matt Murdock's fight against Mayor Fisk.",
+  ],
+  "Spider-Man: Brand New Day": [
+    "Peter Parker's first film since the world forgot who he is in No Way Home.",
+    "This site doesn't have a reliable plot summary for it yet.",
+  ],
+  "VisionQuest": [
+    "Paul Bettany returns as Vision, following the White Vision who flew off at the end of WandaVision.",
+    "This site doesn't have a reliable plot summary for it yet.",
+  ],
+};
+
 const TIER_NAME = { e: "Essential", r: "Recommended", o: "Optional" };
 const TIER_RANK = { e: 0, r: 1, o: 2 };
-const ICON = { Movie: "i-movie", Series: "i-series", Special: "i-special" };
+const ICON = { Movie: "i-movie", "X-Men film": "i-movie", Series: "i-series", Special: "i-special" };
 const RELEASE = new Date("2026-12-18T00:00:00");
 
 const KEY = "doomsday-prep-v1";
 let state = { last: -1, seen: {}, tier: "r" };
 try { const s = JSON.parse(localStorage.getItem(KEY)); if (s) state = Object.assign(state, s); } catch (e) {}
+if (!(state.last === -2 || (state.last >= -1 && state.last < TITLES.length))) state = { last: -1, seen: {}, tier: state.tier || "r" };
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} };
 
 const $ = (id) => document.getElementById(id);
@@ -392,14 +690,14 @@ const svg = (id) => `<svg aria-hidden="true"><use href="#${id}"/></svg>`;
 // Step 1 dropdown
 const sel = $("last");
 sel.innerHTML = '<option value="-1">Choose a title…</option><option value="-2">I haven\'t seen any of them</option>' +
-  TITLES.map((t, i) => `<option value="${i}">${esc(t[0])} (${t[1]}${t[2] === "Movie" ? "" : ", " + t[2].toLowerCase()})</option>`).join("");
+  TITLES.map((t, i) => `<option value="${i}">${esc(t[0])} (${t[1]}${t[2] === "Movie" ? "" : ", " + t[2].replace("X-Men film", "Fox X-Men film").toLowerCase().replace("fox x-men", "Fox X-Men")})</option>`).join("");
 sel.value = String(state.last);
 
 sel.addEventListener("change", () => {
   state.last = Number(sel.value);
   // Default the in-between items: movies seen, series/specials not.
   state.seen = {};
-  for (let i = 0; i <= state.last; i++) state.seen[i] = TITLES[i][2] === "Movie";
+  for (let i = 0; i <= state.last; i++) state.seen[i] = TITLES[i][2] === "Movie"; // X-Men films and series start unticked
   if (state.last >= 0) state.seen[state.last] = true;
   save(); render();
 });
@@ -413,7 +711,17 @@ function itemHTML(t, i, opts) {
     <div><span class="title">${esc(title)}</span><span class="tag ${tier}">${TIER_NAME[tier]}</span></div>
     <div class="meta">${year} · ${type}</div>
     ${note ? `<div class="note">${esc(note)}</div>` : ""}
+    ${RECAP[title] ? `<details class="recap" data-t="${esc(title)}"><summary>Doomsday recap <span>(spoilers)</span></summary><ul>${RECAP[title].map((r) => `<li>${esc(r)}</li>`).join("")}</ul></details>` : ""}
   </div></li>`;
+}
+
+// Rebuild a list without closing recaps the viewer has open.
+function fill(el, html) {
+  const open = new Set([...el.querySelectorAll("details.recap[open]")].map((d) => d.dataset.t));
+  const top = el.scrollTop;
+  el.innerHTML = html;
+  el.querySelectorAll("details.recap").forEach((d) => { if (open.has(d.dataset.t)) d.open = true; });
+  el.scrollTop = top;
 }
 
 function render() {
@@ -423,9 +731,7 @@ function render() {
   if (last === -1) return;
 
   if (last >= 0) {
-    const past = $("past"), top = past.scrollTop;
-    past.innerHTML = TITLES.slice(0, last + 1).map((t, i) => itemHTML(t, i, { checkbox: true })).join("");
-    past.scrollTop = top;
+    fill($("past"), TITLES.slice(0, last + 1).map((t, i) => itemHTML(t, i, { checkbox: true })).join(""));
   }
 
   document.querySelectorAll(".seg button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.tier === state.tier)));
@@ -445,15 +751,15 @@ function render() {
   $("strip").innerHTML = cells.join("");
 
   const list = missed.concat(upcoming);
-  const movies = list.filter((i) => TITLES[i][2] === "Movie").length;
+  const movies = list.filter((i) => TITLES[i][2] !== "Series" && TITLES[i][2] !== "Special").length;
   $("stats").innerHTML = `
     <div><strong>${list.length}</strong>To watch</div>
     <div><strong>${movies}</strong>Movies</div>
     <div><strong>${list.length - movies}</strong>Series &amp; specials</div>
     <div><strong>${missed.length}</strong>Missed so far</div>`;
-  $("todo").innerHTML = list.length
+  fill($("todo"), list.length
     ? list.map((i, n) => itemHTML(TITLES[i], i, { n: n + 1 })).join("")
-    : `<li class="empty"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3"><circle cx="32" cy="32" r="26"/><path d="M20 33l8 8 16-18" stroke="#FF5A1F" stroke-width="5"/></svg>You're all caught up at this level. See you at Doomsday.</li>`;
+    : `<li class="empty"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3"><circle cx="32" cy="32" r="26"/><path d="M20 33l8 8 16-18" stroke="#3DF57A" stroke-width="5"/></svg>You're all caught up at this level. See you at Doomsday.</li>`);
 }
 
 $("past").addEventListener("change", (e) => {
