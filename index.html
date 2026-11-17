@@ -154,10 +154,6 @@
   .pills a:first-child { background: var(--iron); color: var(--cloak); }
   .pills a:hover { background: rgba(205, 208, 200, 0.16); }
   .pills a:first-child:hover { background: var(--iron); }
-  .chip-date {
-    font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
-    padding: 7px 12px; border-radius: 999px; border: 1px solid rgba(205, 208, 200, 0.22); color: #AEB8B0;
-  }
 
   .stage {
     position: relative; z-index: 1; flex: 1;
@@ -224,11 +220,6 @@
   .dots button[aria-pressed="true"] { color: var(--cloak); background: radial-gradient(circle at 35% 30%, #E4E6E0, var(--iron) 70%); }
   .dots button:hover { box-shadow: 0 0 0 2px var(--glow), 0 6px 14px rgba(13, 22, 18, 0.45); }
 
-  /* small secondary render in the corner, like a second product */
-  .orb { position: absolute; right: max(16px, 4vw); bottom: 28px; width: 92px; z-index: 1; text-align: center; }
-  .orb svg { width: 92px; height: 92px; filter: drop-shadow(0 14px 14px rgba(13, 22, 18, 0.55)); animation: bob 6s ease-in-out infinite reverse; }
-  .orb span { display: block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #AEB8B0; margin-top: 4px; }
-  @media (prefers-reduced-motion: reduce) { .orb svg { animation: none; } }
 
   @media (max-width: 980px) {
     .stage { grid-template-columns: 1fr; text-align: left; }
@@ -236,10 +227,8 @@
     .float { width: min(70vw, 280px); }
     .side { justify-self: start; text-align: left; }
     .dots { justify-content: flex-start; }
-    .orb { display: none; }
     .pills a:not(:first-child) { display: none; }
   }
-  @media (max-width: 520px) { .chip-date { display: none; } }
 
   /* ---------- Steps ---------- */
   .step { margin-bottom: 34px; }
@@ -383,6 +372,78 @@
 
   footer { color: var(--ink-soft); font-size: 0.86rem; margin-top: 40px; display: flex; gap: 10px; align-items: center; justify-content: center; text-align: center; letter-spacing: 0.04em; }
   footer svg { width: 22px; height: 22px; flex: none; color: var(--glow); }
+
+  /* =====================================================================
+     Clean, abstract pass: flat surfaces, hairlines, simple geometry.
+     Overrides the heavier armour styling above.
+     ===================================================================== */
+  .plate { clip-path: none; background: var(--plate-hi); box-shadow: none; border: 1px solid var(--hair); border-radius: 18px; }
+  .plate::before { display: none; }
+  .card { padding: 24px; }
+
+  .step-head::after { height: 1px; background: var(--hair); }
+  .step-num {
+    clip-path: none; background: none; width: 40px; height: 40px; border-radius: 50%;
+    border: 1px solid var(--glow); color: var(--ink); font-size: 1rem;
+  }
+  .step h2 { text-shadow: none; font-size: 1.4rem; letter-spacing: 0.08em; }
+
+  select { border-radius: 12px; box-shadow: none; border: 1px solid var(--hair); background: var(--bg); }
+  select:hover, select:focus { box-shadow: none; border-color: var(--glow); }
+
+  .seg button, .seg button[aria-pressed="true"] { clip-path: none; border-radius: 999px; box-shadow: none; }
+  .seg button { background: none; border: 1px solid var(--hair); font-weight: 600; }
+  .seg button:hover { border-color: var(--glow); box-shadow: none; }
+  .seg button[aria-pressed="true"] { background: var(--glow); border-color: var(--glow); }
+
+  .strip { background: none; box-shadow: none; padding: 0; height: 22px; gap: 3px; }
+  .strip i { border-radius: 3px; }
+  .strip i.missed { box-shadow: none; }
+
+  .stats { gap: 10px; }
+  .stats div, .stats div:first-child { clip-path: none; border-radius: 14px; box-shadow: none; }
+  .stats div { background: var(--bg); border: 1px solid var(--hair); }
+  .stats div:first-child { background: var(--glow); border-color: var(--glow); }
+
+  ul.items > li { border-top-color: var(--hair); }
+  .icon, li.essential .icon { clip-path: none; border-radius: 50%; box-shadow: none; background: none; border: 1px solid var(--hair); }
+  li.essential .icon { border-color: var(--glow); }
+  li.essential .icon svg { color: var(--ink); }
+  .tag { clip-path: none; border-radius: 999px; padding: 2px 9px; }
+
+  .check span { clip-path: none; border-radius: 7px; box-shadow: none; border: 1px solid var(--line); background: none; }
+  .check input:checked + span { background: var(--glow); border-color: var(--glow); box-shadow: none; }
+
+  .recap summary { clip-path: none; border-radius: 999px; box-shadow: none; background: none; border: 1px solid var(--hair); }
+  .recap summary:hover { box-shadow: none; border-color: var(--glow); }
+  .recap summary::before { clip-path: none; border-radius: 50%; width: 7px; height: 7px; }
+  .recap[open] summary { border-color: var(--glow); }
+  .recap ul { background: none; box-shadow: none; border-left: 1px solid var(--glow); border-radius: 0; }
+
+  /* hero: quiet backdrop */
+  .hero::after { display: none; }
+  .kicker::before { box-shadow: none; height: 1px; }
+  .hero h1 span { text-shadow: none; }
+  .cta { box-shadow: none; }
+  .pills { box-shadow: none; }
+  .dots button { background: none; box-shadow: none; border: 1px solid rgba(205, 208, 200, 0.3); }
+  .dots button:hover { box-shadow: none; border-color: var(--glow); }
+  .dots button[aria-pressed="true"] { background: var(--iron); border-color: var(--iron); }
+  .big { text-shadow: none; }
+  .brand i { clip-path: none; border-radius: 50%; background: var(--glow); }
+
+  /* live countdown timer, top right */
+  .timer { display: flex; align-items: flex-start; gap: 6px; font-variant-numeric: tabular-nums; }
+  .timer div { text-align: center; min-width: 2.4ch; }
+  .timer b { display: block; font-family: "Castoro Titling", Georgia, serif; font-weight: 400; font-size: 1.5rem; line-height: 1; color: var(--iron); }
+  .timer div:last-child b { color: var(--glow); }
+  .timer small { display: block; margin-top: 4px; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #8E978F; }
+  .timer .sep { font-family: "Castoro Titling", Georgia, serif; font-size: 1.3rem; line-height: 1.1; color: #5E6A62; min-width: 0; }
+  @media (max-width: 640px) {
+    .pills { display: none; }
+    .brand { font-size: 0; gap: 0; }
+    .timer b { font-size: 1.2rem; }
+  }
 </style>
 </head>
 <body>
@@ -413,7 +474,12 @@
         <a href="#step3">Recaps</a>
         <a href="#about">About</a>
       </div>
-      <span class="chip-date">Dec 18, 2026</span>
+      <div class="timer" id="timer" role="timer" aria-label="Time until Avengers: Doomsday">
+        <div><b id="t-d">00</b><small>Days</small></div><span class="sep">:</span>
+        <div><b id="t-h">00</b><small>Hrs</small></div><span class="sep">:</span>
+        <div><b id="t-m">00</b><small>Min</small></div><span class="sep">:</span>
+        <div><b id="t-s">00</b><small>Sec</small></div>
+      </div>
     </nav>
 
     <div class="stage">
@@ -513,8 +579,8 @@
       </div>
 
       <div class="side">
-        <div class="big" id="days">–</div>
-        <div class="big-label" id="days-label">days until Doomsday</div>
+        <div class="big">Dec 18</div>
+        <div class="big-label">In theaters, 2026</div>
         <div class="depth">Choose your depth:</div>
         <div class="dots" role="group" aria-label="How thorough">
           <button data-tier="e" title="Essentials only">ESS</button>
@@ -524,29 +590,6 @@
       </div>
     </div>
 
-    <div class="orb" aria-hidden="true">
-      <!-- a small glowing energy core, the scene's second "product" -->
-      <svg viewBox="0 0 100 100">
-        <defs>
-          <radialGradient id="core" cx="40%" cy="35%" r="65%">
-            <stop offset="0" stop-color="#E4E6E0"/>
-            <stop offset=".25" stop-color="#A8FFC4"/>
-            <stop offset=".6" stop-color="#3DF57A"/>
-            <stop offset="1" stop-color="#1F3329"/>
-          </radialGradient>
-          <radialGradient id="ring" cx="50%" cy="50%" r="50%">
-            <stop offset=".7" stop-color="#CDD0C8"/>
-            <stop offset="1" stop-color="#46564D"/>
-          </radialGradient>
-        </defs>
-        <circle cx="50" cy="50" r="44" fill="url(#ring)"/>
-        <circle cx="50" cy="50" r="36" fill="#15241D"/>
-        <circle cx="50" cy="50" r="30" fill="url(#core)"/>
-        <ellipse cx="40" cy="36" rx="10" ry="6" fill="#E4E6E0" opacity=".55"/>
-        <g fill="#6C776F"><circle cx="50" cy="10" r="2.5"/><circle cx="90" cy="50" r="2.5"/><circle cx="50" cy="90" r="2.5"/><circle cx="10" cy="50" r="2.5"/></g>
-      </svg>
-      <span>Doom core</span>
-    </div>
   </header>
 
   <div class="layout">
@@ -980,11 +1023,16 @@ const $ = (id) => document.getElementById(id);
 const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const svg = (id) => `<svg aria-hidden="true"><use href="#${id}"/></svg>`;
 
-// Countdown
-(function () {
-  const days = Math.ceil((RELEASE - new Date()) / 86400000);
-  $("days").textContent = days > 0 ? days : "Now";
-  $("days-label").textContent = days > 0 ? `day${days === 1 ? "" : "s"} until Doomsday` : "Doomsday is in theaters";
+// Live countdown to release (local midnight, Dec 18 2026), ticking every second
+(function tick() {
+  const left = Math.max(0, RELEASE - new Date());
+  const sec = Math.floor(left / 1000);
+  const pad = (n) => String(n).padStart(2, "0");
+  $("t-d").textContent = pad(Math.floor(sec / 86400));
+  $("t-h").textContent = pad(Math.floor(sec / 3600) % 24);
+  $("t-m").textContent = pad(Math.floor(sec / 60) % 60);
+  $("t-s").textContent = pad(sec % 60);
+  if (left > 0) setTimeout(tick, 1000 - (Date.now() % 1000));
 })();
 
 // Step 1 dropdown
