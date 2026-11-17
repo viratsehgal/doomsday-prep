@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Doomsday Prep</title>
+<meta name="description" content="Tell it the last MCU movie or show you saw, and get a catch-up list of everything you still need to see before Avengers: Doomsday.">
+<style>
+  :root {
+    --bg: #f6f5f2;
+    --surface: #ffffff;
+    --surface-2: #efede8;
+    --text: #1c1b19;
+    --muted: #6b6760;
+    --border: #dcd8d0;
+    --accent: #2f6b3a;
+    --accent-text: #ffffff;
+    --essential: #b3261e;
+    --recommended: #a15c00;
+    --optional: #6b6760;
+    --focus: #2f6b3a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #121311;
+      --surface: #1b1d1a;
+      --surface-2: #242722;
+      --text: #ecebe6;
+      --muted: #9d9a92;
+      --border: #33362f;
+      --accent: #7fc48a;
+      --accent-text: #0f1a10;
+      --essential: #ff8a80;
+      --recommended: #f0b45a;
+      --optional: #9d9a92;
+      --focus: #7fc48a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #121311; --surface: #1b1d1a; --surface-2: #242722; --text: #ecebe6;
+    --muted: #9d9a92; --border: #33362f; --accent: #7fc48a; --accent-text: #0f1a10;
+    --essential: #ff8a80; --recommended: #f0b45a; --optional: #9d9a92; --focus: #7fc48a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  main { max-width: 760px; margin: 0 auto; padding: 32px 16px 64px; }
+  h1 { font-size: 2rem; margin: 0 0 4px; letter-spacing: -0.02em; }
+  h2 { font-size: 1.15rem; margin: 0 0 4px; }
+  p.lede { color: var(--muted); margin: 0 0 28px; }
+  .step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .step-num { color: var(--muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; }
+  .hint { color: var(--muted); font-size: 0.9rem; margin: 0 0 14px; }
+  select, button {
+    font: inherit;
+    color: var(--text);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+  select { width: 100%; }
+  button { cursor: pointer; }
+  button.primary { background: var(--accent); color: var(--accent-text); border-color: var(--accent); font-weight: 600; }
+  :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .seg { display: flex; flex-wrap: wrap; gap: 6px; }
+  .seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+  ul.items { list-style: none; margin: 0; padding: 0; }
+  ul.items li {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 10px 0; border-top: 1px solid var(--border);
+  }
+  ul.items li:first-child { border-top: 0; }
+  #past { max-height: 420px; overflow-y: auto; padding-right: 4px; }
+  ul.items input { margin-top: 5px; width: 18px; height: 18px; accent-color: var(--accent); flex: none; }
+  .title { font-weight: 600; }
+  .meta { color: var(--muted); font-size: 0.85rem; }
+  .note { font-size: 0.9rem; margin-top: 2px; }
+  .tag { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; margin-left: 6px; white-space: nowrap; }
+  .tag.e { color: var(--essential); }
+  .tag.r { color: var(--recommended); }
+  .tag.o { color: var(--optional); }
+  .num { color: var(--muted); font-variant-numeric: tabular-nums; min-width: 2ch; text-align: right; flex: none; }
+  .summary { display: flex; gap: 20px; flex-wrap: wrap; margin: 4px 0 14px; }
+  .summary div { font-size: 0.9rem; color: var(--muted); }
+  .summary strong { display: block; font-size: 1.5rem; color: var(--text); }
+  .empty { color: var(--muted); padding: 12px 0; }
+  details summary { cursor: pointer; color: var(--muted); font-size: 0.9rem; margin-top: 10px; }
+  .hidden { display: none; }
+  footer { color: var(--muted); font-size: 0.8rem; margin-top: 28px; }
+  .label-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .linkish { background: none; border: 0; padding: 0; color: var(--accent); text-decoration: underline; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Doomsday Prep</h1>
+  <p class="lede">Tell us the last MCU movie or show you watched. We'll check what you may have skipped along the way and build your catch-up list for <em>Avengers: Doomsday</em> (Dec 18, 2026).</p>
+
+  <section class="step">
+    <div class="step-num">Step 1</div>
+    <h2>What's the last one you watched?</h2>
+    <p class="hint">Titles are in release order. If you watched out of order, pick the most recent one.</p>
+    <select id="last" aria-label="Last movie or show you watched"></select>
+  </section>
+
+  <section class="step hidden" id="step2">
+    <div class="step-num">Step 2</div>
+    <div class="label-row">
+      <h2>Did you see these along the way?</h2>
+      <span><button class="linkish" id="all">Check all</button> · <button class="linkish" id="none">Uncheck all</button></span>
+    </div>
+    <p class="hint">Everything up to your pick is listed here. Movies start checked and series start unchecked, since series are what most people miss. Uncheck anything you haven't seen.</p>
+    <ul class="items" id="past"></ul>
+  </section>
+
+  <section class="step hidden" id="step3">
+    <div class="step-num">Your list</div>
+    <h2>What to watch before Doomsday</h2>
+    <p class="hint">How thorough do you want to be?</p>
+    <div class="seg" role="group" aria-label="Priority filter">
+      <button data-tier="e">Essentials only</button>
+      <button data-tier="r">Essentials + recommended</button>
+      <button data-tier="o">Everything</button>
+    </div>
+    <div class="summary" id="summary"></div>
+    <ul class="items" id="todo"></ul>
+    <details>
+      <summary>What do the labels mean?</summary>
+      <p class="hint"><span class="tag e">Essential</span> sets up characters or plot that Doomsday is expected to build on. <span class="tag r">Recommended</span> adds useful context. <span class="tag o">Optional</span> is fun but can be skipped. These are our own picks, not an official guide.</p>
+    </details>
+  </section>
+
+  <footer>A fan-made checklist, not affiliated with Marvel or Disney. Your answers are saved only in this browser.</footer>
+</main>
+
+<script>
+// [title, release, type (Movie/Series/Special), tier (e/r/o), note]
+const TITLES = [
+  ["Iron Man", "2008", "Movie", "r", "Tony Stark builds the suit. This is where it all starts."],
+  ["The Incredible Hulk", "2008", "Movie", "o", "Introduces General Ross, who becomes important much later."],
+  ["Iron Man 2", "2010", "Movie", "o", ""],
+  ["Thor", "2011", "Movie", "r", "Thor and Loki's story begins."],
+  ["Captain America: The First Avenger", "2011", "Movie", "r", "Steve Rogers, Bucky, and the Tesseract."],
+  ["The Avengers", "2012", "Movie", "e", "The team forms. Everything after builds on it."],
+  ["Iron Man 3", "2013", "Movie", "o", ""],
+  ["Thor: The Dark World", "2013", "Movie", "o", ""],
+  ["Captain America: The Winter Soldier", "2014", "Movie", "r", "Bucky returns and S.H.I.E.L.D. falls."],
+  ["Guardians of the Galaxy", "2014", "Movie", "r", ""],
+  ["Avengers: Age of Ultron", "2015", "Movie", "r", "Introduces Wanda and Vision."],
+  ["Ant-Man", "2015", "Movie", "o", "First look at the Quantum Realm."],
+  ["Captain America: Civil War", "2016", "Movie", "e", "The Avengers split. Introduces Black Panther and Spider-Man."],
+  ["Doctor Strange", "2016", "Movie", "r", ""],
+  ["Guardians of the Galaxy Vol. 2", "2017", "Movie", "o", ""],
+  ["Spider-Man: Homecoming", "2017", "Movie", "o", ""],
+  ["Thor: Ragnarok", "2017", "Movie", "r", ""],
+  ["Black Panther", "2018", "Movie", "r", "Wakanda opens up to the world."],
+  ["Avengers: Infinity War", "2018", "Movie", "e", "Thanos and the Snap."],
+  ["Ant-Man and the Wasp", "2018", "Movie", "o", ""],
+  ["Captain Marvel", "2019", "Movie", "r", "Carol Danvers' origin, set in the '90s."],
+  ["Avengers: Endgame", "2019", "Movie", "e", "The Blip is reversed and the original team's story ends."],
+  ["Spider-Man: Far From Home", "2019", "Movie", "o", ""],
+  ["WandaVision", "2021", "Series", "r", "Wanda's grief, and how she becomes the Scarlet Witch."],
+  ["The Falcon and the Winter Soldier", "2021", "Series", "e", "Sam Wilson takes up the shield. Introduces John Walker."],
+  ["Loki (Season 1)", "2021", "Series", "e", "The TVA and the multiverse breaks open."],
+  ["Black Widow", "2021", "Movie", "r", "Introduces Yelena, who leads the Thunderbolts."],
+  ["What If...? (Season 1)", "2021", "Series", "o", ""],
+  ["Shang-Chi and the Legend of the Ten Rings", "2021", "Movie", "r", ""],
+  ["Eternals", "2021", "Movie", "o", ""],
+  ["Hawkeye", "2021", "Series", "o", ""],
+  ["Spider-Man: No Way Home", "2021", "Movie", "e", "The multiverse spills over, and the world forgets Peter Parker."],
+  ["Moon Knight", "2022", "Series", "o", ""],
+  ["Doctor Strange in the Multiverse of Madness", "2022", "Movie", "e", "Incursions, alternate universes, and the Illuminati."],
+  ["Ms. Marvel", "2022", "Series", "o", ""],
+  ["Thor: Love and Thunder", "2022", "Movie", "o", ""],
+  ["She-Hulk: Attorney at Law", "2022", "Series", "o", ""],
+  ["Werewolf by Night", "2022", "Special", "o", ""],
+  ["Black Panther: Wakanda Forever", "2022", "Movie", "r", "Shuri becomes Black Panther, and Namor appears."],
+  ["The Guardians of the Galaxy Holiday Special", "2022", "Special", "o", ""],
+  ["Ant-Man and the Wasp: Quantumania", "2023", "Movie", "r", ""],
+  ["Guardians of the Galaxy Vol. 3", "2023", "Movie", "o", ""],
+  ["Secret Invasion", "2023", "Series", "o", ""],
+  ["Loki (Season 2)", "2023", "Series", "e", "What happens to the TVA and the multiverse after Season 1."],
+  ["The Marvels", "2023", "Movie", "r", "Ends with a doorway to the X-Men."],
+  ["What If...? (Season 2)", "2023", "Series", "o", ""],
+  ["Echo", "2024", "Series", "o", ""],
+  ["Deadpool & Wolverine", "2024", "Movie", "e", "The TVA, dying timelines, and the end of the Fox universe."],
+  ["Agatha All Along", "2024", "Series", "o", ""],
+  ["What If...? (Season 3)", "2024", "Series", "o", ""],
+  ["Your Friendly Neighborhood Spider-Man", "2025", "Series", "o", ""],
+  ["Captain America: Brave New World", "2025", "Movie", "e", "Sam Wilson's first film as Captain America. Sets up a new Avengers team."],
+  ["Daredevil: Born Again (Season 1)", "2025", "Series", "o", ""],
+  ["Thunderbolts*", "2025", "Movie", "e", "Yelena's team becomes the 'New Avengers'."],
+  ["Ironheart", "2025", "Series", "o", ""],
+  ["The Fantastic Four: First Steps", "2025", "Movie", "e", "Meet the Fantastic Four from another Earth."],
+  ["Eyes of Wakanda", "2025", "Series", "o", ""],
+  ["Marvel Zombies", "2025", "Series", "o", ""],
+  ["Wonder Man", "2026", "Series", "o", ""],
+  ["Daredevil: Born Again (Season 2)", "2026", "Series", "o", ""],
+  ["Spider-Man: Brand New Day", "2026", "Movie", "r", "Spider-Man's first film after No Way Home."],
+];
+const TIER_NAME = { e: "Essential", r: "Recommended", o: "Optional" };
+const TIER_RANK = { e: 0, r: 1, o: 2 };
+
+const KEY = "doomsday-prep-v1";
+let state = { last: -1, seen: {}, tier: "r" };
+try { const s = JSON.parse(localStorage.getItem(KEY)); if (s) state = Object.assign(state, s); } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} };
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+// Step 1 dropdown
+const sel = $("last");
+sel.innerHTML = '<option value="-1">Choose a title…</option><option value="-2">I haven\'t seen any of them</option>' +
+  TITLES.map((t, i) => `<option value="${i}">${esc(t[0])} (${t[1]}${t[2] === "Movie" ? "" : ", " + t[2].toLowerCase()})</option>`).join("");
+sel.value = String(state.last);
+
+sel.addEventListener("change", () => {
+  state.last = Number(sel.value);
+  // Default the in-between items: movies seen, series/specials not.
+  state.seen = {};
+  for (let i = 0; i <= state.last; i++) state.seen[i] = TITLES[i][2] === "Movie";
+  if (state.last >= 0) state.seen[state.last] = true;
+  save(); render();
+});
+
+function itemHTML(t, i, opts) {
+  const [title, year, type, tier, note] = t;
+  const box = opts.checkbox
+    ? `<input type="checkbox" data-i="${i}" ${state.seen[i] ? "checked" : ""} aria-label="Seen ${esc(title)}">`
+    : `<span class="num">${opts.n}</span>`;
+  return `<li>${box}<div>
+    <div><span class="title">${esc(title)}</span><span class="tag ${tier}">${TIER_NAME[tier]}</span></div>
+    <div class="meta">${year} · ${type}</div>
+    ${note ? `<div class="note">${esc(note)}</div>` : ""}
+  </div></li>`;
+}
+
+function render() {
+  const picked = state.last !== -1;
+  const last = state.last; // -2 means none seen
+  $("step2").classList.toggle("hidden", last < 0);
+  $("step3").classList.toggle("hidden", !picked);
+  if (!picked) return;
+
+  if (last >= 0) {
+    $("past").innerHTML = TITLES.slice(0, last + 1).map((t, i) => itemHTML(t, i, { checkbox: true })).join("");
+  }
+
+  document.querySelectorAll(".seg button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.tier === state.tier)));
+
+  const maxRank = TIER_RANK[state.tier];
+  const missed = [], upcoming = [];
+  TITLES.forEach((t, i) => {
+    if (TIER_RANK[t[3]] > maxRank) return;
+    if (i <= last) { if (!state.seen[i]) missed.push(i); }
+    else upcoming.push(i);
+  });
+  const list = missed.concat(upcoming);
+  const movies = list.filter((i) => TITLES[i][2] === "Movie").length;
+
+  $("summary").innerHTML = `
+    <div><strong>${list.length}</strong>to watch</div>
+    <div><strong>${movies}</strong>movies</div>
+    <div><strong>${list.length - movies}</strong>series &amp; specials</div>
+    <div><strong>${missed.length}</strong>missed along the way</div>`;
+  $("todo").innerHTML = list.length
+    ? list.map((i, n) => itemHTML(TITLES[i], i, { n: n + 1 })).join("")
+    : `<li class="empty">You're all caught up at this level. See you at Doomsday.</li>`;
+}
+
+$("past").addEventListener("change", (e) => {
+  const i = e.target.dataset.i;
+  if (i === undefined) return;
+  state.seen[i] = e.target.checked; save(); render();
+});
+$("all").addEventListener("click", () => { for (let i = 0; i <= state.last; i++) state.seen[i] = true; save(); render(); });
+$("none").addEventListener("click", () => { for (let i = 0; i <= state.last; i++) state.seen[i] = false; save(); render(); });
+document.querySelectorAll(".seg button").forEach((b) => b.addEventListener("click", () => { state.tier = b.dataset.tier; save(); render(); }));
+
+render();
+</script>
+</body>
+</html>
