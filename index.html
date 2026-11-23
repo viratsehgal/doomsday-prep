@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Doomsday Prep</title>
+<script>document.documentElement.classList.add("intro-on");</script>
 <meta name="description" content="Tell it the last MCU movie or show you saw, and get a catch-up list of everything you still need to see before Avengers: Doomsday.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -62,7 +63,17 @@
   }
 
   * { box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  .step { scroll-margin-top: 16px; }
+  .recap-search {
+    width: 100%; font: inherit; color: var(--ink); background: var(--bg);
+    border: 1px solid var(--hair); border-radius: 12px; padding: 12px 14px; margin-bottom: 8px;
+  }
+  .recap-search:focus { outline: none; border-color: var(--glow); }
+  .layout.layout-full { display: block; }
+  .brand, .pills a { white-space: nowrap; }
+  @media (min-width: 900px) { #all-recaps { columns: 2; column-gap: 40px; } #all-recaps > li { break-inside: avoid; } }
   body {
     margin: 0;
     background-color: var(--bg);
@@ -134,11 +145,6 @@
   /* glass pill navigation */
   .topbar { position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
   .brand { display: flex; align-items: center; gap: 10px; font-family: "Castoro Titling", Georgia, serif; font-weight: 400; letter-spacing: 0.12em; font-size: 0.9rem; text-transform: uppercase; }
-  .brand i {
-    width: 30px; height: 30px; display: grid; place-items: center; font-style: normal; font-size: 0.8rem; color: var(--on-glow);
-    background: radial-gradient(circle at 35% 30%, #B8FFD0, var(--glow) 60%);
-    clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%);
-  }
   .pills {
     display: flex; gap: 4px; padding: 5px;
     background: rgba(205, 208, 200, 0.08);
@@ -227,7 +233,6 @@
     .float { width: min(70vw, 280px); }
     .side { justify-self: start; text-align: left; }
     .dots { justify-content: flex-start; }
-    .pills a:not(:first-child) { display: none; }
   }
 
   /* ---------- Steps ---------- */
@@ -430,7 +435,6 @@
   .dots button:hover { box-shadow: none; border-color: var(--glow); }
   .dots button[aria-pressed="true"] { background: var(--iron); border-color: var(--iron); }
   .big { text-shadow: none; }
-  .brand i { clip-path: none; border-radius: 50%; background: var(--glow); }
 
   /* live countdown timer, top right */
   .timer { display: flex; align-items: flex-start; gap: 6px; font-variant-numeric: tabular-nums; }
@@ -439,26 +443,111 @@
   .timer div:last-child b { color: var(--glow); }
   .timer small { display: block; margin-top: 4px; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #8E978F; }
   .timer .sep { font-family: "Castoro Titling", Georgia, serif; font-size: 1.3rem; line-height: 1.1; color: #5E6A62; min-width: 0; }
+  @media (max-width: 860px) { .pills a { padding: 7px 10px; letter-spacing: 0.06em; } }
+  @media (max-width: 760px) { .pills { display: none; } }
   @media (max-width: 640px) {
-    .pills { display: none; }
-    .brand { font-size: 0; gap: 0; }
+    .brand { font-size: 0.72rem; letter-spacing: 0.08em; }
     .timer b { font-size: 1.2rem; }
   }
+
+  /* =====================================================================
+     Intro: darkness everywhere except the mask. Clicking the mask opens
+     the darkness outward from it with a silvery rim (a reverse moonlight).
+     The mask itself is the real hero mask, seen through a hole.
+     ===================================================================== */
+  @property --k { syntax: "<number>"; inherits: true; initial-value: 1; }
+  @property --x { syntax: "<length>"; inherits: true; initial-value: 0px; }
+  @property --y { syntax: "<length>"; inherits: true; initial-value: 0px; }
+  #intro {
+    display: none; position: fixed; inset: 0; z-index: 1000;
+    --x: 50vw; --y: 45vh; --rx: 0px; --ry: 0px; --k: 0;
+    transition: --k 2.4s cubic-bezier(0.55, 0, 0.3, 1);
+  }
+  /* the mask sits above the darkness, so it stays visible without a hole and the
+     light can grow out from behind it */
+  .intro-on .stage, .intro-lift .stage { z-index: 1001; }
+  .intro-on .stage { pointer-events: none; }
+  /* the headline and side text wait until the light has finished spreading */
+  .intro-lift .stage > div:not(.product) { opacity: 0; }
+  .intro-on { overflow: hidden; }
+  .intro-on #intro, #intro.opening { display: block; }
+  .intro-dark {
+    position: absolute; inset: 0;
+    background: #070C09; /* the deepest cloak shade: reads as black, stays on palette */
+    -webkit-mask-image: radial-gradient(ellipse calc(var(--rx) * var(--k)) calc(var(--ry) * var(--k)) at var(--x) var(--y), transparent 72%, #070C09 100%);
+            mask-image: radial-gradient(ellipse calc(var(--rx) * var(--k)) calc(var(--ry) * var(--k)) at var(--x) var(--y), transparent 72%, #070C09 100%);
+  }
+  @keyframes halo { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+  .intro-hit {
+    position: absolute; left: calc(var(--x) - var(--rx)); top: calc(var(--y) - var(--ry));
+    width: calc(var(--rx) * 2); height: calc(var(--ry) * 2); border-radius: 50%;
+    background: none; border: 0; cursor: pointer; padding: 0;
+  }
+  .intro-hit:focus-visible { outline: 1px solid var(--glow); outline-offset: 10px; }
+  .intro-hint {
+    position: absolute; left: 0; right: 0; top: calc(var(--y) + var(--ry) + 28px); margin: 0; text-align: center;
+    font-family: "Castoro Titling", Georgia, serif; font-size: 0.9rem; letter-spacing: 0.3em; text-transform: uppercase;
+    color: #8E978F; animation: halo 3.6s ease-in-out infinite; pointer-events: none;
+  }
+  /* opening: light grows from behind the mask past the screen edges while the mask glides home */
+  #intro.opening {
+    --k: var(--kmax, 12);
+    transition: --k 2.4s cubic-bezier(0.55, 0, 0.3, 1), --x 1.6s cubic-bezier(0.55, 0, 0.3, 1), --y 1.6s cubic-bezier(0.55, 0, 0.3, 1);
+  }
+  #intro.opening .intro-hint { animation: none; opacity: 0; transition: opacity 0.4s; }
+  #intro.opening .intro-hit { display: none; }
+  /* until the reveal, the backdrop right around the mask is dark too, so only the mask shows */
+  .intro-on .hero { background: #070C09; }
+  .intro-on .hero::before, .intro-on .shadow, .intro-on .caption { opacity: 0; }
+  .shadow, .caption { transition: opacity 1s ease 1s; }
+  /* the page itself wakes up as the light reaches it */
+  .intro-on .stage > div:not(.product), .intro-on .topbar { opacity: 0; }
+  .stage > div:not(.product), .topbar { transition: opacity 1.2s ease 0.8s; }
+  @media (prefers-reduced-motion: reduce) {
+    #intro { transition: none; }
+    .intro-hint { animation: none; }
+  }
+
+  /* poster tile: a soft rounded card, about the size of the number and icon */
+  .poster {
+    position: relative; flex: none; width: 40px; height: 60px; border-radius: 10px; overflow: hidden;
+    display: grid; place-items: center; border: 1px solid var(--hair);
+    background: linear-gradient(160deg, var(--plate-hi), var(--chip));
+  }
+  .poster b { font-family: "Castoro Titling", Georgia, serif; font-weight: 400; font-size: 0.72rem; letter-spacing: 0.06em; color: var(--ink-soft); }
+  .poster img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.4s ease; }
+  .poster img.loaded { opacity: 1; }
+  li.essential .poster { border-color: var(--glow); }
+
+  /* glowing eyes in the header's bottom-right corner */
+  .peek {
+    /* --pw is the eyes' width, --pg the gap to the corner. The tilt shifts the visible eyes
+       inward on the right and below the box, so right/bottom compensate to keep both gaps equal. */
+    --pw: clamp(84px, 8vw, 140px); --pg: max(24px, 3.2vw);
+    position: absolute; z-index: 1; width: var(--pw);
+    right: calc(var(--pg) - var(--pw) * 0.096); bottom: calc(var(--pg) + var(--pw) * 0.13);
+    filter: drop-shadow(0 0 4px rgba(228, 230, 224, 0.9)) drop-shadow(0 0 14px rgba(228, 230, 224, 0.55)) drop-shadow(0 0 32px rgba(228, 230, 224, 0.25));
+    transition: opacity 1.5s ease 1.4s;
+  }
+  /* the pair is tilted 35 degrees toward the left */
+  .peek svg { display: block; width: 100%; height: auto; overflow: visible; transform-origin: 50% 50%; transform: rotate(-35deg); }
+  .peek-eye { transform-box: fill-box; transform-origin: center; animation: peek-blink 7s ease-in-out infinite; }
+  .peek g + g .peek-eye { animation-delay: 0.04s; }
+  @keyframes peek-blink { 0%, 92%, 100% { transform: scaleY(1); } 94% { transform: scaleY(0.06); } 96% { transform: scaleY(1); } }
+  .intro-on .peek { opacity: 0; transition: none; }
+  @media (max-width: 760px) { .peek { --pw: 64px; --pg: 18px; } }
+  @media (prefers-reduced-motion: reduce) { .peek-eye { animation: none; } }
 </style>
 </head>
 <body>
+<div id="intro">
+  <div class="intro-dark"></div>
+  <button class="intro-hit" id="intro-hit" aria-label="Enter Doomsday Prep"></button>
+  <p class="intro-hint">Touch the mask</p>
+</div>
 <!-- Icon sprites -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
-    <symbol id="i-movie" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
-      <rect x="3" y="4" width="18" height="16"/><path d="M7 4v16M17 4v16M3 9h4M3 15h4M17 9h4M17 15h4"/>
-    </symbol>
-    <symbol id="i-series" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
-      <rect x="2.5" y="6" width="19" height="13"/><path d="M8 2.5l4 3.5 4-3.5M8 22h8"/>
-    </symbol>
-    <symbol id="i-special" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
-      <path d="M12 2.5l2.8 6 6.5.7-4.9 4.4 1.4 6.4L12 16.8 6.2 20l1.4-6.4L2.7 9.2l6.5-.7z"/>
-    </symbol>
     <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="square">
       <path d="M4 12.5l5 5L20 6.5"/>
     </symbol>
@@ -468,10 +557,10 @@
 <main>
   <header class="hero">
     <nav class="topbar" aria-label="Page">
-      <div class="brand"><i>DP</i>Doomsday Prep</div>
+      <div class="brand">Doomsday Prep</div>
       <div class="pills">
         <a href="#start">Watch list</a>
-        <a href="#step3">Recaps</a>
+        <a href="#recaps">Recaps</a>
         <a href="#about">About</a>
       </div>
       <div class="timer" id="timer" role="timer" aria-label="Time until Avengers: Doomsday">
@@ -590,6 +679,13 @@
       </div>
     </div>
 
+    <!-- Two glowing eyes watching from the dark corner (an original motif) -->
+    <div class="peek" aria-hidden="true">
+      <svg viewBox="0 0 160 60">
+        <g transform="rotate(-8 40 30)"><path class="peek-eye" d="M10 32 Q38 10 68 28 Q40 50 10 32 Z" fill="#E4E6E0"/></g>
+        <g transform="rotate(8 120 30)"><path class="peek-eye" d="M150 32 Q122 10 92 28 Q120 50 150 32 Z" fill="#E4E6E0"/></g>
+      </svg>
+    </div>
   </header>
 
   <div class="layout">
@@ -652,9 +748,20 @@
   </div>
   </div>
 
+  <div class="layout layout-full">
+  <section class="step" id="recaps">
+    <div class="step-head"><span class="step-num">IV</span><h2>All recaps</h2></div>
+    <div class="card plate">
+      <p class="hint">Every title's Doomsday recap in release order. Spoilers inside.</p>
+      <input class="recap-search" id="recap-search" type="search" placeholder="Search titles…" aria-label="Search recaps by title">
+      <ul class="items" id="all-recaps"></ul>
+    </div>
+  </section>
+  </div>
+
   <footer class="layout" id="about">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-    <span>A fan-made checklist, not affiliated with Marvel or Disney. Your answers are saved only in this browser.</span>
+    <span>A fan-made checklist, not affiliated with Marvel or Disney. Your answers are saved only in this browser.<br>Posters from <a href="https://www.themoviedb.org/" rel="noopener" target="_blank">TMDB</a>. This product uses the TMDB API but is not endorsed or certified by TMDB.</span>
   </footer>
 </main>
 
@@ -1010,8 +1117,64 @@ const RECAP = {
 
 const TIER_NAME = { e: "Essential", r: "Recommended", o: "Optional" };
 const TIER_RANK = { e: 0, r: 1, o: 2 };
-const ICON = { Movie: "i-movie", "X-Men film": "i-movie", Series: "i-series", Special: "i-special" };
 const RELEASE = new Date("2026-12-18T00:00:00");
+
+// ---------- Posters, loaded from TMDB ----------
+// Paste a free TMDB API key (v3) or API read access token (v4) here to show posters.
+// Get one at https://www.themoviedb.org/settings/api. Without it, rows show a placeholder tile.
+const TMDB_KEY = "0ed76bf7a7acbe6ff71aafe4194e5de5";
+const POSTER_CACHE_KEY = "doomsday-prep-posters-v1";
+let posterCache = {};
+try { posterCache = JSON.parse(localStorage.getItem(POSTER_CACHE_KEY)) || {}; } catch (e) {}
+const savePosters = () => { try { localStorage.setItem(POSTER_CACHE_KEY, JSON.stringify(posterCache)); } catch (e) {} };
+
+async function tmdb(path, params = {}) {
+  const url = new URL("https://api.themoviedb.org/3" + path), bearer = TMDB_KEY.length > 40;
+  if (!bearer) url.searchParams.set("api_key", TMDB_KEY);
+  for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
+  const res = await fetch(url, { headers: bearer ? { Authorization: `Bearer ${TMDB_KEY}` } : {} });
+  if (!res.ok) throw new Error(`TMDB ${res.status}`);
+  return res.json();
+}
+// Find the poster for a title: a season's own poster where there is one, else the show or film.
+async function findPoster([title, year, type]) {
+  const season = title.match(/^(.*?)\s*\(Season (\d+)\)$/);
+  const name = (season ? season[1] : title).replace("*", "");
+  if (type === "Series" || season) {
+    const shows = (await tmdb("/search/tv", { query: name })).results || [];
+    const show = shows.find((x) => season || (x.first_air_date || "").startsWith(year)) || shows[0];
+    if (!show) return "";
+    if (season) { try { const s = await tmdb(`/tv/${show.id}/season/${season[2]}`); if (s.poster_path) return s.poster_path; } catch (e) {} }
+    return show.poster_path || "";
+  }
+  let hit = ((await tmdb("/search/movie", { query: name, year })).results || [])[0];
+  if (!hit) hit = ((await tmdb("/search/movie", { query: name })).results || [])[0];
+  if (!hit && type === "Special") hit = ((await tmdb("/search/tv", { query: name })).results || [])[0];
+  return (hit && hit.poster_path) || "";
+}
+const posterLookups = {};
+async function loadPoster(el) {
+  el.dataset.done = "1";
+  const t = TITLES[Number(el.dataset.poster)];
+  let path = posterCache[t[0]];
+  if (path === undefined) {
+    try { path = await (posterLookups[t[0]] ||= findPoster(t)); } catch (e) { delete posterLookups[t[0]]; return; }
+    posterCache[t[0]] = path; savePosters();
+  }
+  if (!path) return;
+  const img = new Image();
+  img.alt = ""; img.decoding = "async";
+  img.onload = () => img.classList.add("loaded");
+  img.src = "https://image.tmdb.org/t/p/w154" + path;
+  el.appendChild(img);
+}
+const posterObserver = "IntersectionObserver" in window
+  ? new IntersectionObserver((entries) => entries.forEach((e) => { if (e.isIntersecting) { posterObserver.unobserve(e.target); loadPoster(e.target); } }), { rootMargin: "300px" })
+  : null;
+function observePosters(root) {
+  if (!TMDB_KEY) return;
+  root.querySelectorAll(".poster[data-poster]:not([data-done])").forEach((el) => (posterObserver ? posterObserver.observe(el) : loadPoster(el)));
+}
 
 const KEY = "doomsday-prep-v1";
 let state = { last: -1, seen: {}, tier: "r" };
@@ -1055,7 +1218,8 @@ function itemHTML(t, i, opts) {
   const lead = opts.checkbox
     ? `<label class="check"><input type="checkbox" data-i="${i}" ${state.seen[i] ? "checked" : ""} aria-label="Seen ${esc(title)}"><span>${svg("i-check")}</span></label>`
     : `<span class="num">${String(opts.n).padStart(2, "0")}</span>`;
-  return `<li class="${tier === "e" ? "essential" : ""}">${lead}<span class="icon" title="${type}">${svg(ICON[type])}</span><div>
+  const initials = title.replace(/\(.*?\)|[^A-Za-z0-9 ]/g, "").split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("");
+  return `<li class="${tier === "e" ? "essential" : ""}">${lead}<span class="poster" data-poster="${i}" aria-hidden="true"><b>${esc(initials)}</b></span><div>
     <div><span class="title">${esc(title)}</span><span class="tag ${tier}">${TIER_NAME[tier]}</span></div>
     <div class="meta">${year} · ${type}</div>
     ${note ? `<div class="note">${esc(note)}</div>` : ""}
@@ -1070,6 +1234,7 @@ function fill(el, html) {
   el.innerHTML = html;
   el.querySelectorAll("details.recap").forEach((d) => { if (open.has(d.dataset.t)) d.open = true; });
   el.scrollTop = top;
+  observePosters(el);
 }
 
 function render() {
@@ -1121,7 +1286,78 @@ $("all").addEventListener("click", () => { for (let i = 0; i <= state.last; i++)
 $("none").addEventListener("click", () => { for (let i = 0; i <= state.last; i++) state.seen[i] = false; save(); render(); });
 document.querySelectorAll("[data-tier]").forEach((b) => b.addEventListener("click", () => { state.tier = b.dataset.tier; save(); render(); }));
 
+// All recaps: every title, filterable by name. Independent of the watch list.
+function renderRecaps() {
+  const q = $("recap-search").value.trim().toLowerCase();
+  const rows = TITLES.map((t, i) => [t, i]).filter(([t]) => !q || t[0].toLowerCase().includes(q));
+  fill($("all-recaps"), rows.length
+    ? rows.map(([t, i]) => itemHTML(t, i, { n: i + 1 })).join("")
+    : `<li class="empty">No titles match "${esc(q)}".</li>`);
+}
+$("recap-search").addEventListener("input", renderRecaps);
+
+// In-page links scroll with JS, so they work even where hash navigation doesn't
+// (e.g. embedded previews). The Watch list link also focuses the dropdown.
+document.querySelectorAll('a[href^="#"]').forEach((a) => a.addEventListener("click", (e) => {
+  const target = document.getElementById(a.getAttribute("href").slice(1));
+  if (!target) return;
+  e.preventDefault();
+  const smooth = !matchMedia("(prefers-reduced-motion: reduce)").matches;
+  target.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start" });
+  if (target.id === "start") setTimeout(() => $("last").focus({ preventScroll: true }), smooth ? 500 : 0);
+}));
+
 render();
+renderRecaps();
+
+
+// Intro: cut a hole in the darkness around the hero mask, then open it on click.
+(function intro() {
+  const root = document.documentElement, box = $("intro");
+  if (!root.classList.contains("intro-on")) return;
+  if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+  scrollTo(0, 0);
+
+  // The mask is shifted to the centre of the screen during the intro, and glides
+  // back to its place in the header as the light spreads.
+  const product = document.querySelector(".product");
+  let dx = 0, dy = 0, cx = 0, cy = 0;
+  function place() {
+    const r = document.querySelector(".float").getBoundingClientRect();
+    cx = r.left + r.width / 2 - dx; cy = r.top + r.height / 2 - dy; // untransformed position
+    dx = innerWidth / 2 - cx; dy = innerHeight / 2 - cy;
+    product.style.transform = `translate(${dx}px, ${dy}px)`;
+    box.style.setProperty("--x", `${innerWidth / 2}px`);
+    box.style.setProperty("--y", `${innerHeight / 2}px`);
+    box.style.setProperty("--rx", `${r.width * 0.62}px`);
+    box.style.setProperty("--ry", `${r.height * 0.62}px`);
+    // How far the light must grow so its fully-clear centre just passes the farthest corner.
+    const far = Math.hypot(Math.max(cx, innerWidth - cx), Math.max(cy, innerHeight - cy));
+    box.style.setProperty("--kmax", (far / (0.72 * 0.62 * Math.min(r.width, r.height)) + 0.5).toFixed(2));
+  }
+  place();
+  addEventListener("resize", place);
+  document.fonts && document.fonts.ready.then(place);
+
+  let opened = false;
+  function open() {
+    if (opened) return;
+    opened = true;
+    removeEventListener("resize", place);
+    const instant = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    root.classList.add("intro-lift");
+    box.classList.add("opening");
+    root.classList.remove("intro-on"); // page content starts fading in under the light
+    product.style.transition = instant ? "none" : "transform 1.6s cubic-bezier(0.55, 0, 0.3, 1)";
+    product.style.transform = "";
+    box.style.setProperty("--x", `${cx}px`);
+    box.style.setProperty("--y", `${cy}px`);
+    setTimeout(() => { product.style.transition = ""; }, instant ? 0 : 1650);
+    setTimeout(() => { box.remove(); root.classList.remove("intro-lift"); }, instant ? 0 : 2450);
+  }
+  $("intro-hit").addEventListener("click", open);
+  addEventListener("keydown", (e) => { if (!opened && (e.key === "Enter" || e.key === " " || e.key === "Escape")) { e.preventDefault(); open(); } });
+})();
 </script>
 <script type="importmap">
 { "imports": {
